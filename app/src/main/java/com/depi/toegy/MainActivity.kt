@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ToEgyTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    
+
                 }
             }
         }
