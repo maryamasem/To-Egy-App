@@ -62,7 +62,6 @@ fun ShimmerGridItem( brush: Brush) {
             modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Shimmer box بدل الصورة
             Box(
                 modifier = Modifier
                     .size(60.dp)
@@ -73,7 +72,6 @@ fun ShimmerGridItem( brush: Brush) {
             Spacer(modifier = Modifier.width(12.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                // شريط Shimmer يمثل اسم المكان
                 Box(
                     modifier = Modifier
                         .height(16.dp)
@@ -84,7 +82,6 @@ fun ShimmerGridItem( brush: Brush) {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // شريط Shimmer يمثل الموقع
                 Box(
                     modifier = Modifier
                         .height(14.dp)
@@ -93,8 +90,7 @@ fun ShimmerGridItem( brush: Brush) {
                         .background(brush)
                 )
             }
-
-            // دايرة Shimmer مكان أيقونة المفضلة
+            
             Box(
                 modifier = Modifier
                     .size(24.dp)
