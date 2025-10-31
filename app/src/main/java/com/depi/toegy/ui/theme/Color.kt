@@ -9,3 +9,5 @@ val LightBackground = Color(0xFFF5F6F9)
 val CardWhite = Color(0xFFFFFFFF)
 val SubtleGray = Color(0xFF8A97A6)
 val BodyGray = Color(0xFF5C6B73)
+
+val BluePrimary = Color(0xFF0D1B2A)
