@@ -37,9 +37,6 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions{
-        kotlinCompilerExtensionVersion="1.5.0"
-    }
 }
 
 dependencies {
@@ -59,10 +56,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation("androidx.compose.foundation:foundation:1.9.4")
-    implementation("com.google.accompanist:accompanist-pager:0.32.0")
-    implementation("com.google.accompanist:accompanist-pager-indicators:0.32.0")
-
-
-
 }
