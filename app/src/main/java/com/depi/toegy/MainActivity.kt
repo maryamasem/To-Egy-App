@@ -5,9 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
+import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.depi.toegy.screens.TravelDetailScreen
 import com.depi.toegy.ui.theme.LightBackground
+import com.depi.toegy.screens.MainScreen
 import com.depi.toegy.ui.theme.ToEgyTheme
 
 class MainActivity : ComponentActivity() {
@@ -15,11 +17,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ToEgyTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = LightBackground
-                ) {
-                    TravelDetailScreen()
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    MainScreen()
                 }
             }
         }
