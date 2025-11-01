@@ -118,6 +118,7 @@ fun onBoardingScreen() {
                 ) {
                     Button(onClick = {// val intent=Intent(context,SignUpActivity::class.java)
                         //context.startActivity(intent)
+                        //test
                     },
 
 
