@@ -23,11 +23,21 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.depi.toegy.R
 import com.depi.toegy.ui.theme.*
+
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun TravelDetailScreenPreview(modifier: Modifier = Modifier) {
+    TravelDetailScreen()
+}
+
+
+
 
 @Composable
 fun TravelDetailScreen() {
@@ -67,7 +77,7 @@ fun TravelDetailScreen() {
                         text = "Giza Pyramids",
                         fontSize = 22.sp,
                         color = navy,
-                        style = MaterialTheme.typography.h6
+                        style = MaterialTheme.typography.bodySmall
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
@@ -103,7 +113,7 @@ fun TravelDetailScreen() {
                         .height(52.dp)
                         .shadow(elevation = 6.dp, shape = RoundedCornerShape(12.dp)),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = navy)
+                    colors = ButtonDefaults.buttonColors(containerColor  = navy)
                 ) {
                     Text(text = "Add to Itinerary", color = Color.White, fontSize = 16.sp)
                 }
@@ -117,7 +127,7 @@ fun TravelDetailScreen() {
                         .height(52.dp)
                         .shadow(elevation = 4.dp, shape = RoundedCornerShape(12.dp)),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = accentYellow)
+                    colors = ButtonDefaults.buttonColors(containerColor  = accentYellow)
                 ) {
                     Text(text = "Book Tour/Hotel", color = NavyDark, fontSize = 16.sp)
                 }
