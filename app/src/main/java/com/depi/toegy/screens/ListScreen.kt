@@ -1,6 +1,7 @@
 package com.depi.toegy.screens
 
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,6 +25,7 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +37,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,24 +50,43 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
+import coil.request.ImageRequest
+import com.depi.toegy.Api.TourismViewModel
+import com.depi.toegy.Model.Place
 import com.depi.toegy.R
 import com.depi.toegy.ui.theme.BluePrimary
 import com.depi.toegy.ui.theme.NavyDark
 
 
-val places = listOf(
-    Place("Giza Pyramids", "Giza Plateau", R.drawable.pyramids),
-    Place("Philae Temple", "Aswan", R.drawable.attractions),
-    Place("Luxor Temple", "Luxor", R.drawable.pyramids),
-    Place("Sharm El Sheikh Reefs", "Sharm El Sheikh", R.drawable.attractions),
-    Place("Bibliotheca Alexandrina", "Alexandria", R.drawable.pyramids)
-)
-@Composable
-fun PlacesListScreen(modifier: Modifier = Modifier) {
 
-//    val vm = remember { PlacesViewModel() }
-//    val stateofApi = vm.state2
-//    var isLoading = vm.isLoading
+@Composable
+fun PlacesListScreen(
+    navController: NavController,
+    category:String,
+    modifier: Modifier = Modifier
+) {
+
+    Log.d("cat", "PlacesListScreen: $category")
+    val vm: TourismViewModel = viewModel()
+   // vm.getPlaces(category)
+
+    LaunchedEffect(category) {
+        vm.getPlaces(category)
+    }
+
+
+
+
+    val stateofApi = vm.state
+    var isLoading = vm.isLoading
+
+
 
     val configuration = LocalConfiguration.current
     val screenHeightDp = configuration.screenHeightDp
@@ -108,27 +130,28 @@ fun PlacesListScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-//        if (isLoading ) {
-//            LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-//                items(shimmerItemCount) {
-//                    AnimatedShimmer()
-//                }
-//            }
-//        }
-        // else {
-
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(places) { place ->
-                PlaceCard(
-                    place
-                )
+         val places = stateofApi
+        if (isLoading ) {
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                items(shimmerItemCount) {
+                    AnimatedShimmer()
+                }
             }
         }
+         else {
 
-        //  }
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(places) { place ->
+                        PlaceCard(
+                            place
+                        )
+                    }
+                }
+
+          }
     }
 }
 
@@ -150,6 +173,55 @@ fun PlaceCard(place: Place) {
             modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+
+            SubcomposeAsyncImage(
+                model = ImageRequest.Builder(context)
+                    .data(place.img)
+                    .setHeader("User-Agent", "MyToEgyptApp/1.0")
+                    .crossfade(true)
+                    .build(),
+                contentDescription = place.name,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(RoundedCornerShape(12.dp))
+
+            ) {
+                when (painter.state) {
+                    is AsyncImagePainter.State.Loading -> {
+                        // أثناء التحميل
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(30.dp),
+                                strokeWidth = 3.dp
+                            )
+                        }
+                    }
+
+                    is AsyncImagePainter.State.Error -> {
+                        // لو الصورة فشلت في التحميل
+                        Image(
+                            painter = painterResource(R.drawable.pyramids),
+                            contentDescription = "Error",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(12.dp))
+                        )
+                    }
+
+                    else -> {
+                        // لما الصورة تتحمل
+                        SubcomposeAsyncImageContent()
+                    }
+                }
+            }
+
+
 //            AsyncImage(
 //                model = ImageRequest.Builder(context)
 //                    .data(place.imageUrl)
@@ -165,14 +237,14 @@ fun PlaceCard(place: Place) {
 //                    .clip(RoundedCornerShape(12.dp))
 //            )
 
-            Image(
-                painter = painterResource(id = place.pic),
-                contentDescription = place.name,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(RoundedCornerShape(12.dp))
-            )
+//            Image(
+//                painter = painterResource(id = place.pic),
+//                contentDescription = place.name,
+//                contentScale = ContentScale.Crop,
+//                modifier = Modifier
+//                    .size(80.dp)
+//                    .clip(RoundedCornerShape(12.dp))
+//            )
             Spacer(modifier = Modifier.width(12.dp))
 
             Column(modifier = Modifier.weight(1f)) {
@@ -201,18 +273,9 @@ fun PlaceCard(place: Place) {
 
 
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewScreen(){
-    PlacesListScreen()
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun PreviewScreen(){
+//    PlacesListScreen()
+//}
 
-data class Place(
-    val name: String,
-    val location: String,
-    //  val description: String? = null,
-    val pic:Int ,
-    val imageUrl: String? = null,
-    val lat: Double? = null,
-    val lon: Double? = null
-)

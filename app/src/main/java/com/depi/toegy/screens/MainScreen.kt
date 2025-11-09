@@ -75,11 +75,16 @@ fun AppNavHost(
         Destination.entries.forEach { destination ->
             composable(destination.route) {
                 when (destination) {
-                    Destination.Home -> Home()
+                    Destination.Home -> Home(navController)
                     Destination.Setting -> Setting()
                     Destination.Favourites -> FavoritesScreen()
                 }
             }
+        }
+
+        composable("ListScreen/{category}") {
+            val category = it.arguments?.getString("category") ?: ""
+            PlacesListScreen(navController,category)
         }
     }
 
@@ -165,7 +170,7 @@ fun MainScreenStaticPreview() {
                     .fillMaxSize()
                     .padding(padding)
             ) {
-                Home()
+                Home(navController = rememberNavController())
             }
         }
     }

@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +48,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.depi.toegy.Api.TourismViewModel
 import com.depi.toegy.R
 
 import com.depi.toegy.ui.theme.BackgroundWhite
@@ -55,7 +60,9 @@ import com.depi.toegy.ui.theme.NavyBlue
 import com.depi.toegy.ui.theme.Yellow
 
 @Composable
-fun Home() {
+fun Home(navController: NavController) {
+   // val vm = rememberSaveable { TourismViewModel() }
+
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -158,9 +165,15 @@ fun Home() {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxSize()
             ){
-                CategoryItem(icon = R.drawable.museum_ic , label = "Museums")
-                CategoryItem(icon = R.drawable.beachs_ic, label = "Beaches")
-                CategoryItem(icon = R.drawable.resturant_ic, label = "Restaurant")
+                CategoryItem(icon = R.drawable.museum_ic , label = "Museums"){
+                    navController.navigate("ListScreen/museums")
+                }
+                CategoryItem(icon = R.drawable.beachs_ic, label = "Beaches"){
+                    navController.navigate("ListScreen/beaches")
+                }
+                CategoryItem(icon = R.drawable.resturant_ic, label = "Restaurant"){
+                    navController.navigate("ListScreen/restaurants")
+                }
 
             }
             Spacer(Modifier.height(8.dp))
@@ -168,10 +181,15 @@ fun Home() {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxSize()
             ){
-                CategoryItem(icon = R.drawable.hotel_ic , label = "Hotels")
-                CategoryItem(icon = R.drawable.history_ic, label = "History")
-                CategoryItem(icon = R.drawable.airport_ic, label = "Airports")
-
+                CategoryItem(icon = R.drawable.hotel_ic , label = "Hotels"){
+                    navController.navigate("ListScreen/hotels")
+                }
+                CategoryItem(icon = R.drawable.history_ic, label = "History"){
+                    navController.navigate("ListScreen/history")
+                }
+                CategoryItem(icon = R.drawable.airport_ic, label = "Airports"){
+                    navController.navigate("ListScreen/airports")
+                }
             }
 
 
@@ -179,7 +197,7 @@ fun Home() {
     }
 }
 @Composable
-fun CategoryItem (icon: Int, label: String){
+fun CategoryItem (icon: Int, label: String,onClick: () -> Unit){
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -187,6 +205,9 @@ fun CategoryItem (icon: Int, label: String){
             .clip(RoundedCornerShape(16.dp))
             .background(Color(0xFFEBEEFA))
             .padding(vertical = 16.dp)
+            .clickable{
+                onClick()
+            }
     ) {
         Image(
             painter = painterResource(id = icon),
@@ -249,7 +270,7 @@ fun MuseumOpeningBannerAnimated(onClick: () -> Unit) {
 @Preview(showSystemUi = true)
 @Composable
 fun HomePreview (){
-    Home()
+    Home(navController = rememberNavController())
 }
 
 
