@@ -1,6 +1,6 @@
-package com.depi.toegy.Api
+package com.depi.toegy.api
 
-import com.depi.toegy.Model.Place
+import com.depi.toegy.model.Place
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path

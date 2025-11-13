@@ -36,9 +36,6 @@ fun TravelDetailScreenPreview(modifier: Modifier = Modifier) {
     TravelDetailScreen()
 }
 
-
-
-
 @Composable
 fun TravelDetailScreen() {
     val navy = Navy

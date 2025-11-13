@@ -1,4 +1,4 @@
-package com.depi.toegy.Model
+package com.depi.toegy.model
 
 data class Place(
     val name: String ="",

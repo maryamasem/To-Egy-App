@@ -40,14 +40,14 @@ fun FavoritesScreen() {
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF5F5F5))
-            .padding(16.dp)
+            .padding(24.dp),
+        horizontalAlignment = Alignment.Start
     ) {
         Text(
             text = "Favorites",
-            fontSize =50.sp,
+            fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF002B5B),
-            modifier = Modifier.padding(start = 75.dp, top = 60.dp, bottom = 16.dp)
         )
         LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             items(favorites) { place ->

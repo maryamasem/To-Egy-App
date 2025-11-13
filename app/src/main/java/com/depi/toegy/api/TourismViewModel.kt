@@ -1,12 +1,11 @@
-package com.depi.toegy.Api
+package com.depi.toegy.api
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.depi.toegy.Model.Place
+import com.depi.toegy.model.Place
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -14,7 +13,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class TourismViewModel : ViewModel() {
-
     var state by mutableStateOf<List<Place>>(emptyList())
     var isLoading by mutableStateOf(false)
     val apiService : TourismApiService
@@ -30,8 +28,6 @@ class TourismViewModel : ViewModel() {
     fun getPlaces(category: String){
         viewModelScope.launch { // by default main thread
             try {
-
-
                 isLoading = true
               //  Log.d("trace", "Step 1: entered try")
                 state =  getPlacesFromRemote(category)
