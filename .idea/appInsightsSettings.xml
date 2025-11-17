@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.depi.toegy" />
+                  <option name="mobileSdkAppId" value="1:257692333298:android:2741fdb7457e8b72b70c6b" />
+                  <option name="projectId" value="to-egy-app-aa66b" />
+                  <option name="projectNumber" value="257692333298" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

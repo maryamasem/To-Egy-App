@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.depi.toegy.ui.theme.NavyBlue
 import com.depi.toegy.ui.theme.Yellow
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun ProfileScreen(userName: String) {
@@ -87,10 +88,10 @@ fun ProfileScreen(userName: String) {
 
         Button(
             onClick = {
-               /* FirebaseAuth.getInstance().signOut()
-                navController.navigate("login") {
-                    popUpTo(0)
-                }*/
+//              FirebaseAuth.getInstance().signOut()
+//                navController.navigate("login") {
+//                    popUpTo(0)
+//                }
 
             },
             colors = ButtonDefaults.buttonColors(containerColor = NavyBlue),

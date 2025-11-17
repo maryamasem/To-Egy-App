@@ -12,8 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -36,7 +39,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.depi.toegy.R
+import com.depi.toegy.ui.theme.Grey
+import com.depi.toegy.ui.theme.NavyBlue
 import com.depi.toegy.ui.theme.ToEgyTheme
+import com.depi.toegy.ui.theme.Yellow
 
 @Composable
 fun LoginScreen() {
@@ -44,7 +50,6 @@ fun LoginScreen() {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    // الخلفية والهيكل العام
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -56,27 +61,24 @@ fun LoginScreen() {
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()
         ) {
-            // شعار بسيط يمكنك استبداله بصورة شعار
             IconPlaceholder()
 
             Spacer(modifier = Modifier.height(8.dp))
-
-            // العنوان والوصف
             Text(
                 text = "TO EGY",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                color = NavyBlue
             )
+
             Text(
                 text = "Your Smart Guide in Egypt",
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                color = Grey,
+                fontSize = 12.sp
             )
 
             Spacer(modifier = Modifier.height(28.dp))
 
-            // حقول الإدخال
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -123,7 +125,7 @@ fun LoginScreen() {
                     .fillMaxWidth()
                     .height(48.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0D1B3A))
+                colors = ButtonDefaults.buttonColors(containerColor = NavyBlue)
             ) {
                 Text(text = "Login", color = Color.White)
             }
@@ -150,21 +152,14 @@ fun LoginScreen() {
 
 @Composable
 fun IconPlaceholder() {
-    // صورة المتحف الجديد
-    Image(
-        painter = painterResource(id = R.drawable.museum_ic),
-        contentDescription = "المتحف المصري الكبير",
-        modifier = Modifier
-            .size(120.dp)
-            .padding(bottom = 8.dp),
-        contentScale = ContentScale.Fit
+    Icon(
+        imageVector = Icons.Default.LocationOn,
+        contentDescription = "App icon",
+        tint = Yellow,
+        modifier = Modifier.size(40.dp)
     )
 }
 
-/**
- * Preview function for LoginScreen
- * Shows the login screen in Android Studio's preview panel
- */
 @Preview(
     showBackground = true,
     name = "Login Screen Preview",
@@ -183,10 +178,6 @@ fun LoginScreenPreview() {
     }
 }
 
-/**
- * Preview function for IconPlaceholder
- * Shows the icon placeholder component in Android Studio's preview panel
- */
 @Preview(
     showBackground = true,
     name = "Icon Placeholder Preview"
