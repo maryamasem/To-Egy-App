@@ -21,20 +21,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.depi.toegy.R
+import com.depi.toegy.model.FavouritePlace
+import com.depi.toegy.model.FavouritesViewModel
 
-data class FavoritePlace(
-    val name: String,
-    val location: String,
-    val imageRes: Int
-)
+
 
 @Composable
-fun FavoritesScreen() {
-    val favorites = listOf(
-        FavoritePlace("Pyramids", "Giza", R.drawable.pyramids),
-        FavoritePlace("Khufu", "Giza", R.drawable.kufu)
-    )
+fun FavoritesScreen(viewModel: FavouritesViewModel =viewModel()) {
+
+    val favorites =viewModel.favourites
 
     Column(
         modifier = Modifier
@@ -51,15 +49,15 @@ fun FavoritesScreen() {
         )
         LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             items(favorites) { place ->
-                FavoriteCard(place)
+                FavoriteCard(place = place,isFavorite=favorites.contains(place),onRemove={viewModel.removeFavorite(place.id)},onAddFavorite={viewModel.addFavourite(place)})}
             }
         }
     }
-}
+
 
 @Composable
-fun FavoriteCard(place: FavoritePlace) {
-    var isFavorite by remember { mutableStateOf(true) }
+fun FavoriteCard(place: FavouritePlace, isFavorite: Boolean, onRemove :()-> Unit,onAddFavorite:( )->Unit) {
+    var favoriteState by remember { mutableStateOf(isFavorite ) }
 
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -70,18 +68,14 @@ fun FavoriteCard(place: FavoritePlace) {
     ) {
         Column {
             Box {
-                Image(
-                    painter = painterResource(id = place.imageRes),
-                    contentDescription = place.name,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(150.dp)
-                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                )
+                AsyncImage(model = place.image, contentDescription = place.name, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxWidth().height(150.dp).clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)))
 
                 IconButton(
-                    onClick = { isFavorite = !isFavorite },
+                    onClick = { favoriteState =!favoriteState
+                        if(favoriteState)
+                            onAddFavorite() else
+                                onRemove()
+                             },
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(8.dp)
@@ -89,12 +83,12 @@ fun FavoriteCard(place: FavoritePlace) {
 
                 ) {
                     Icon(
-                        imageVector = if (isFavorite)
-                            Icons.Filled.Favorite
+                        imageVector =
+                           if(favoriteState)Icons.Filled.Favorite
                         else
-                            Icons.Outlined.FavoriteBorder,
-                        contentDescription = "Favorite Icon",
-                        tint = if (isFavorite) Color.Red else Color.Gray
+                        Icons.Outlined.FavoriteBorder,
+                        contentDescription = null,
+                        tint = Color.Red
                     )
                 }
             }
@@ -108,7 +102,7 @@ fun FavoriteCard(place: FavoritePlace) {
                 )
                 Text(
                     modifier = Modifier.padding(top = 6.dp),
-                    text = place.location,
+                    text = place.category,
                     color = Color.Gray,
                     fontSize = 14.sp
                 )

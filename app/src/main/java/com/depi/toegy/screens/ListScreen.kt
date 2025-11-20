@@ -57,6 +57,8 @@ import coil.request.ImageRequest
 import com.depi.toegy.api.TourismViewModel
 import com.depi.toegy.model.Place
 import com.depi.toegy.R
+import com.depi.toegy.model.FavouritePlace
+import com.depi.toegy.model.FavouritesViewModel
 import com.depi.toegy.ui.theme.BluePrimary
 import com.depi.toegy.ui.theme.NavyDark
 
@@ -136,14 +138,15 @@ fun PlacesListScreen(
             }
         }
          else {
-
+         val favouriteViewModel : FavouritesViewModel=viewModel()
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(places) { place ->
                         PlaceCard(
-                            place
+                            place=place,
+                            favouriteViewModel=favouriteViewModel
                         )
                     }
                 }
@@ -153,9 +156,9 @@ fun PlacesListScreen(
 }
 
 @Composable
-fun PlaceCard(place: Place) {
+fun PlaceCard(place: Place,favouriteViewModel: FavouritesViewModel) {
     val context = LocalContext.current
-    var isFavorite by remember { mutableStateOf(false) }
+    var isFavorite by remember { mutableStateOf(favouriteViewModel.favourites.any { it.id == place.name }) }
 
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -257,12 +260,29 @@ fun PlaceCard(place: Place) {
                 )
             }
 
-            IconButton(onClick = { isFavorite = !isFavorite }) {
-                Icon(
-                    imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                    contentDescription = "Favorite",
-                    tint = if (isFavorite) Color(0xFFFFC107) else Color.Gray
+            IconButton(onClick = {
+                isFavorite = !isFavorite
+                if (isFavorite) {
+                    favouriteViewModel.addFavourite(
+                        FavouritePlace(
+                            id = place.name,
+                            name = place.name,
+                            location = place.location,
+                            img = place.img
+                        )
+                    )
+                } else {
+                    favouriteViewModel.removeFavorite(place.name)
+                }
+            }
+            ) {
+                Icon(imageVector = if(isFavorite)
+                    Icons.Default.Favorite else
+                Icons.Default.FavoriteBorder, contentDescription = "Favourite",
+                    tint = if(isFavorite)
+                Color(0xFFFFC107) else Color.Gray
                 )
+
             }
         }
     }

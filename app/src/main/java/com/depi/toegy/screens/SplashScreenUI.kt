@@ -142,8 +142,8 @@ fun onBoardingScreen() {
 @Composable
 fun CustomIndicator(isSelected: Boolean) {
 
-    Box(modifier = Modifier.height(10.dp).width(width= if(isSelected)20.dp else 15.dp).clip(RoundedCornerShape(10.dp)).background(color=if(isSelected) Color(
-        0xFF0C0B0C
+    Box(modifier = Modifier.height(10.dp).width(width= if(isSelected)20.dp else 15.dp).clip(RoundedCornerShape(10.dp)).background(color=if(isSelected) Color(0xFF002B5B
+
     ) else Color.LightGray))
     Spacer(modifier=Modifier.size(4.dp).padding(bottom = 100.dp,top=100.dp))
 }

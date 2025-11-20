@@ -29,10 +29,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.depi.toegy.model.FavouritesViewModel
 import com.depi.toegy.ui.theme.AccentYellow
 import com.depi.toegy.ui.theme.BackgroundWhite
 import com.depi.toegy.ui.theme.Grey
@@ -74,6 +76,7 @@ fun AppNavHost(
     startDestination: Destination,
     modifier: Modifier = Modifier
 ) {
+    val favouritesViewModel: FavouritesViewModel= viewModel()
     NavHost(
         navController = navController,
         startDestination = startDestination.route,
@@ -84,7 +87,7 @@ fun AppNavHost(
                 when (destination) {
                     Destination.Home -> Home(navController)
                     Destination.Profile -> ProfileScreen("Guest")
-                    Destination.Favourites -> FavoritesScreen()
+                    Destination.Favourites -> FavoritesScreen(viewModel =favouritesViewModel)
                 }
             }
         }

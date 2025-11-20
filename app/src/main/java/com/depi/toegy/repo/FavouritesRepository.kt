@@ -3,6 +3,8 @@ package com.depi.toegy.repo
 import com.depi.toegy.model.FavouritePlace
 import com.google.firebase.firestore.FirebaseFirestore
 
+
+
 class FavouritesRepository {
 
     private val db = FirebaseFirestore.getInstance()
