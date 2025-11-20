@@ -49,7 +49,7 @@ fun FavoritesScreen(viewModel: FavouritesViewModel =viewModel()) {
         )
         LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             items(favorites) { place ->
-                FavoriteCard(place = place,isFavorite=favorites.contains(place),onRemove={viewModel.removeFavorite(place.id)},onAddFavorite={viewModel.addFavourite(place)})}
+                FavoriteCard(place = place,isFavorite=favorites.contains(place),onRemove={viewModel.removeFavorite(place.name)},onAddFavorite={viewModel.addFavourite(place)})}
             }
         }
     }
@@ -68,7 +68,7 @@ fun FavoriteCard(place: FavouritePlace, isFavorite: Boolean, onRemove :()-> Unit
     ) {
         Column {
             Box {
-                AsyncImage(model = place.image, contentDescription = place.name, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxWidth().height(150.dp).clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)))
+                AsyncImage(model = place.img, contentDescription = place.name, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxWidth().height(150.dp).clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)))
 
                 IconButton(
                     onClick = { favoriteState =!favoriteState
@@ -102,7 +102,7 @@ fun FavoriteCard(place: FavouritePlace, isFavorite: Boolean, onRemove :()-> Unit
                 )
                 Text(
                     modifier = Modifier.padding(top = 6.dp),
-                    text = place.category,
+                    text = place.desc,
                     color = Color.Gray,
                     fontSize = 14.sp
                 )

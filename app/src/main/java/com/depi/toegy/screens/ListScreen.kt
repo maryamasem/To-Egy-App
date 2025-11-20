@@ -158,7 +158,7 @@ fun PlacesListScreen(
 @Composable
 fun PlaceCard(place: Place,favouriteViewModel: FavouritesViewModel) {
     val context = LocalContext.current
-    var isFavorite by remember { mutableStateOf(favouriteViewModel.favourites.any { it.id == place.name }) }
+    var isFavorite by remember { mutableStateOf(favouriteViewModel.favourites.any { it.name == place.name }) }
 
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -265,10 +265,14 @@ fun PlaceCard(place: Place,favouriteViewModel: FavouritesViewModel) {
                 if (isFavorite) {
                     favouriteViewModel.addFavourite(
                         FavouritePlace(
-                            id = place.name,
+
                             name = place.name,
+                            lat = place.lat,
+                            long = place.long,
+                            desc=place.desc,
                             location = place.location,
-                            img = place.img
+                            img = place.img,
+                            url = place.url
                         )
                     )
                 } else {
