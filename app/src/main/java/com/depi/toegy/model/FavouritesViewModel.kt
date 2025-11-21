@@ -23,12 +23,21 @@ class FavouritesViewModel(
     }
     fun addFavourite(place: FavouritePlace) {
         userId?.let {
-            repo.addToFavourites(it, place) { _, _ -> }
+            repo.addToFavourites(it, place) { isSuccess, _ ->
+                if (isSuccess) {
+                    favourites = favourites + place
+                }
+
+            }
         }
     }
     fun removeFavorite(placeId:String) {
         userId?.let {
-            repo.removeFavourite(it, placeId) { _, _ -> }
+            repo.removeFavourite(it, placeId) { isSuccess, _ ->
+                if (isSuccess) {
+                    favourites = favourites.filterNot { fav -> fav.id == placeId }
+                }
+            }
         }
 
     }

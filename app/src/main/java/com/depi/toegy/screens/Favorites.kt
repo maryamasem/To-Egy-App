@@ -49,7 +49,7 @@ fun FavoritesScreen(viewModel: FavouritesViewModel =viewModel()) {
         )
         LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             items(favorites) { place ->
-                FavoriteCard(place = place,isFavorite=favorites.contains(place),onRemove={viewModel.removeFavorite(place.name)},onAddFavorite={viewModel.addFavourite(place)})}
+                FavoriteCard(place = place,isFavorite=favorites.contains(place),onRemove={viewModel.removeFavorite(place.id)},onAddFavorite={viewModel.addFavourite(place)})}
             }
         }
     }
@@ -57,7 +57,7 @@ fun FavoritesScreen(viewModel: FavouritesViewModel =viewModel()) {
 
 @Composable
 fun FavoriteCard(place: FavouritePlace, isFavorite: Boolean, onRemove :()-> Unit,onAddFavorite:( )->Unit) {
-    var favoriteState by remember { mutableStateOf(isFavorite ) }
+    var favoriteState = isFavorite
 
     Card(
         shape = RoundedCornerShape(16.dp),

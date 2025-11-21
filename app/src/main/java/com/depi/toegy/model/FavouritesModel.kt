@@ -1,6 +1,7 @@
 package com.depi.toegy.model
 
 data class FavouritePlace(
+    val id: String = "",
     val name: String ="",
     val lat: Double?=null,
     val long: Double?=null,
