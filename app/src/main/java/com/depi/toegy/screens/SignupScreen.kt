@@ -13,11 +13,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -37,20 +35,24 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.depi.toegy.ui.theme.NavyBlue
 import com.depi.toegy.ui.theme.ToEgyTheme
-import com.depi.toegy.ui.theme.Yellow
+import com.depi.toegy.viewModel.SignupViewModel
 
 @Composable
 fun SignUpScreen(
     onNavigateToLogin: () -> Unit = {},
-    onSignUpSuccess: () -> Unit = {}
+    onSignUpSuccess: () -> Unit = {},
+    viewModel: SignupViewModel = viewModel()
 ) {
 
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
 
     Box(
@@ -68,7 +70,7 @@ fun SignUpScreen(
                 .padding(vertical = 16.dp)
         ) {
             // شعار
-            SignUpIconPlaceholder()
+            EgyptIcon()
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -77,7 +79,7 @@ fun SignUpScreen(
                 text = "TO EGY",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                color = NavyBlue
             )
             Text(
                 text = "Create Your Account",
@@ -86,6 +88,18 @@ fun SignUpScreen(
             )
 
             Spacer(modifier = Modifier.height(28.dp))
+
+            // عرض رسالة الخطأ
+            errorMessage?.let { error ->
+                Text(
+                    text = error,
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                )
+            }
 
             // حقل الاسم
             OutlinedTextField(
@@ -172,18 +186,63 @@ fun SignUpScreen(
             // زر إنشاء الحساب
             Button(
                 onClick = {
-                    // التحقق من صحة البيانات هنا
-                    if (password == confirmPassword && name.isNotEmpty() && email.isNotEmpty()) {
-                        onSignUpSuccess()
+                    errorMessage = null
+                    // التحقق من صحة البيانات
+                    when {
+                        name.isBlank() -> {
+                            errorMessage = "Please enter your name"
+                            return@Button
+                        }
+                        email.isBlank() -> {
+                            errorMessage = "Please enter your email"
+                            return@Button
+                        }
+                        password.isBlank() -> {
+                            errorMessage = "Please enter your password"
+                            return@Button
+                        }
+                        password.length < 6 -> {
+                            errorMessage = "Password must be at least 6 characters"
+                            return@Button
+                        }
+                        password != confirmPassword -> {
+                            errorMessage = "Passwords do not match"
+                            return@Button
+                        }
+                        else -> {
+                            isLoading = true
+                            viewModel.registerUser(
+                                name = name,
+                                email = email,
+                                password = password,
+                                onSuccess = {
+                                    isLoading = false
+                                    onSignUpSuccess()
+                                },
+                                onFailure = { error ->
+                                    isLoading = false
+                                    errorMessage = error
+                                }
+                            )
+                        }
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0D1B3A))
+                colors = ButtonDefaults.buttonColors(containerColor = NavyBlue),
+                enabled = !isLoading
             ) {
-                Text(text = "Sign Up", color = Color.White)
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = Color.White,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text(text = "Sign Up", color = Color.White)
+                }
             }
 
             Spacer(modifier = Modifier.height(28.dp))
@@ -200,15 +259,6 @@ fun SignUpScreen(
     }
 }
 
-@Composable
-fun SignUpIconPlaceholder() {
-    Icon(
-        imageVector = Icons.Default.LocationOn,
-        contentDescription = "App icon",
-        tint = Yellow,
-        modifier = Modifier.size(40.dp)
-    )
-}
 
 @Preview(
     showBackground = true,

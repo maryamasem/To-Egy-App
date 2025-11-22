@@ -1,6 +1,5 @@
 package com.depi.toegy.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,11 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -31,21 +28,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.depi.toegy.R
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.depi.toegy.ui.theme.Grey
 import com.depi.toegy.ui.theme.NavyBlue
 import com.depi.toegy.ui.theme.ToEgyTheme
-import com.depi.toegy.ui.theme.Yellow
+import com.depi.toegy.viewModel.LoginViewModel
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    onNavigateToSignUp: () -> Unit = {},
+    onNavigateToForgotPassword: () -> Unit = {},
+    onLoginSuccess: () -> Unit = {},
+    viewModel: LoginViewModel = viewModel()
+) {
     // حالات الحقول
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -61,7 +61,7 @@ fun LoginScreen() {
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()
         ) {
-            IconPlaceholder()
+            EgyptIcon()
 
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -78,6 +78,18 @@ fun LoginScreen() {
             )
 
             Spacer(modifier = Modifier.height(28.dp))
+
+            // عرض رسالة الخطأ
+            viewModel.errorMessage?.let { error ->
+                Text(
+                    text = error,
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                )
+            }
 
             OutlinedTextField(
                 value = email,
@@ -120,19 +132,39 @@ fun LoginScreen() {
 
             // زر تسجيل الدخول
             Button(
-                onClick = { /* تحقق من المصادقة هنا */ },
+                onClick = {
+                    viewModel.loginUser(
+                        email = email,
+                        password = password,
+                        onSuccess = {
+                            onLoginSuccess()
+                        },
+                        onFailure = {
+                            // يتم التعامل مع الخطأ في ViewModel
+                        }
+                    )
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = NavyBlue)
+                colors = ButtonDefaults.buttonColors(containerColor = NavyBlue),
+                enabled = !viewModel.isLoading
             ) {
-                Text(text = "Login", color = Color.White)
+                if (viewModel.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = Color.White,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text(text = "Login", color = Color.White)
+                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            TextButton(onClick = { /* نسيت كلمة المرور؟ */ }) {
+            TextButton(onClick = onNavigateToForgotPassword) {
                 Text(text = "Forgot password?", color = Color.Gray)
             }
 
@@ -141,23 +173,13 @@ fun LoginScreen() {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Don’t have account? ")
-                TextButton(onClick = { /* Sign up action */ }) {
+                Text(text = "Don't have account? ")
+                TextButton(onClick = onNavigateToSignUp) {
                     Text(text = "Sign up", color = MaterialTheme.colorScheme.primary)
                 }
             }
         }
     }
-}
-
-@Composable
-fun IconPlaceholder() {
-    Icon(
-        imageVector = Icons.Default.LocationOn,
-        contentDescription = "App icon",
-        tint = Yellow,
-        modifier = Modifier.size(40.dp)
-    )
 }
 
 @Preview(
@@ -175,16 +197,5 @@ fun LoginScreenPreview() {
         ) {
             LoginScreen()
         }
-    }
-}
-
-@Preview(
-    showBackground = true,
-    name = "Icon Placeholder Preview"
-)
-@Composable
-fun IconPlaceholderPreview() {
-    ToEgyTheme {
-        IconPlaceholder()
     }
 }
