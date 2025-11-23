@@ -1,0 +1,46 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    
+    <!-- خريطة مصر - الشكل الرئيسي -->
+    <path
+        android:fillColor="#0D1B3A"
+        android:pathData="M20,30 L100,30 L100,90 L20,90 Z"
+        android:strokeWidth="2"
+        android:strokeColor="#FFFFFF"/>
+    
+    <!-- شبه جزيرة سيناء -->
+    <path
+        android:fillColor="#0D1B3A"
+        android:pathData="M100,30 L110,40 L110,80 L100,90 Z"
+        android:strokeWidth="2"
+        android:strokeColor="#FFFFFF"/>
+    
+    <!-- نهر النيل -->
+    <path
+        android:fillColor="#4A90E2"
+        android:pathData="M50,30 L55,30 L55,90 L50,90 Z"/>
+    
+    <!-- دلتا النيل -->
+    <path
+        android:fillColor="#4A90E2"
+        android:pathData="M45,30 L60,30 L55,40 L50,40 Z"/>
+    
+    <!-- علامة موقع القاهرة -->
+    <path
+        android:fillColor="#FFC107"
+        android:pathData="M52,47 A3,3 0 1,1 52,53 A3,3 0 1,1 52,47 Z"/>
+    
+    <!-- علامة موقع الإسكندرية -->
+    <path
+        android:fillColor="#FFC107"
+        android:pathData="M45,32.5 A2.5,2.5 0 1,1 45,37.5 A2.5,2.5 0 1,1 45,32.5 Z"/>
+    
+    <!-- علامة موقع الأهرامات -->
+    <path
+        android:fillColor="#FFC107"
+        android:pathData="M48,52 L50,48 L52,52 Z"/>
+</vector>
+

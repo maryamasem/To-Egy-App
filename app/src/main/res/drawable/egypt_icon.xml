@@ -1,0 +1,70 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    
+    <!-- السماء الصفراء الذهبية (شروق الشمس) -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M0,0 L120,0 L120,60 L0,60 Z"/>
+    
+    <!-- الشمس -->
+    <path
+        android:fillColor="#FFA500"
+        android:pathData="M100,20 A15,15 0 1,1 100,50 A15,15 0 1,1 100,20 Z"/>
+    
+    <!-- الأهرامات -->
+    <!-- الهرم الأيسر -->
+    <path
+        android:fillColor="#D4A574"
+        android:pathData="M20,60 L35,40 L50,60 Z"
+        android:strokeWidth="2"
+        android:strokeColor="#8B7355"/>
+    
+    <!-- الهرم الأوسط (الأكبر) -->
+    <path
+        android:fillColor="#D4A574"
+        android:pathData="M40,60 L60,30 L80,60 Z"
+        android:strokeWidth="2"
+        android:strokeColor="#8B7355"/>
+    
+    <!-- الهرم الأيمن -->
+    <path
+        android:fillColor="#D4A574"
+        android:pathData="M70,60 L85,45 L100,60 Z"
+        android:strokeWidth="2"
+        android:strokeColor="#8B7355"/>
+    
+    <!-- نهر النيل -->
+    <path
+        android:fillColor="#1E90FF"
+        android:pathData="M0,60 L120,60 L120,120 L0,120 Z"/>
+    
+    <!-- خطوط الماء المتموجة -->
+    <path
+        android:strokeColor="#0066CC"
+        android:strokeWidth="1.5"
+        android:pathData="M0,75 Q30,70 60,75 T120,75"/>
+    <path
+        android:strokeColor="#0066CC"
+        android:strokeWidth="1.5"
+        android:pathData="M0,90 Q30,85 60,90 T120,90"/>
+    <path
+        android:strokeColor="#0066CC"
+        android:strokeWidth="1.5"
+        android:pathData="M0,105 Q30,100 60,105 T120,105"/>
+    
+    <!-- مركب فيلوكا مبسط -->
+    <path
+        android:fillColor="#8B4513"
+        android:pathData="M50,100 Q60,98 70,100 Q70,105 65,108 Q60,110 55,110 Q50,110 50,108 Q50,105 50,100 Z"/>
+    
+    <!-- شراع المركب -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M55,100 L55,80 L75,85 L75,100 Z"
+        android:strokeWidth="1"
+        android:strokeColor="#DAA520"/>
+</vector>
+

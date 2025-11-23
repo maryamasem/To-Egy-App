@@ -1,0 +1,113 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="150dp"
+    android:viewportWidth="200"
+    android:viewportHeight="150">
+    
+    <!-- الإطار المستطيل المستدير بحدود زرقاء داكنة -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M10,10 L190,10 Q200,10 200,20 L200,130 Q200,140 190,140 L10,140 Q0,140 0,130 L0,20 Q0,10 10,10 Z"
+        android:strokeWidth="3"
+        android:strokeColor="#0D1B3A"/>
+    
+    <!-- السماء البرتقالية-الصفراء (شروق/غروب) -->
+    <path
+        android:fillColor="#FFA500"
+        android:pathData="M10,10 L190,10 L190,80 L10,80 Z"/>
+    
+    <!-- تدرج السماء -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M10,10 L190,10 L190,50 L10,50 Z"
+        android:fillAlpha="0.6"/>
+    
+    <!-- الأهرامات في الخلفية -->
+    <!-- الهرم الأيسر -->
+    <path
+        android:fillColor="#D4A574"
+        android:pathData="M30,80 L50,50 L70,80 Z"
+        android:strokeWidth="1.5"
+        android:strokeColor="#8B7355"/>
+    
+    <!-- الهرم الأوسط (الأكبر) -->
+    <path
+        android:fillColor="#D4A574"
+        android:pathData="M70,80 L100,40 L130,80 Z"
+        android:strokeWidth="1.5"
+        android:strokeColor="#8B7355"/>
+    
+    <!-- الهرم الأيمن -->
+    <path
+        android:fillColor="#D4A574"
+        android:pathData="M130,80 L150,55 L170,80 Z"
+        android:strokeWidth="1.5"
+        android:strokeColor="#8B7355"/>
+    
+    <!-- الطيور في السماء -->
+    <path
+        android:strokeColor="#000000"
+        android:strokeWidth="1.5"
+        android:pathData="M50,35 Q52,33 54,35 Q52,37 50,35"/>
+    <path
+        android:strokeColor="#000000"
+        android:strokeWidth="1.5"
+        android:pathData="M120,30 Q122,28 124,30 Q122,32 120,30"/>
+    <path
+        android:strokeColor="#000000"
+        android:strokeWidth="1.5"
+        android:pathData="M140,40 Q142,38 144,40 Q142,42 140,40"/>
+    
+    <!-- الماء الأزرق مع خطوط متموجة -->
+    <path
+        android:fillColor="#1E90FF"
+        android:pathData="M10,80 L190,80 L190,130 L10,130 Z"/>
+    
+    <!-- خطوط الماء المتموجة -->
+    <path
+        android:strokeColor="#0066CC"
+        android:strokeWidth="1"
+        android:pathData="M10,95 Q50,90 90,95 T170,95"/>
+    <path
+        android:strokeColor="#0066CC"
+        android:strokeWidth="1"
+        android:pathData="M10,105 Q50,100 90,105 T170,105"/>
+    <path
+        android:strokeColor="#0066CC"
+        android:strokeWidth="1"
+        android:pathData="M10,115 Q50,110 90,115 T170,115"/>
+    
+    <!-- المركب (الفيلوكا) -->
+    <!-- جسم المركب -->
+    <path
+        android:fillColor="#8B4513"
+        android:pathData="M60,110 Q80,108 100,110 Q100,115 95,118 Q85,120 75,120 Q65,120 60,118 Q60,115 60,110 Z"/>
+    
+    <!-- الشراع الذهبي-الأصفر -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M75,110 L75,70 L120,75 L120,110 Z"
+        android:strokeWidth="1.5"
+        android:strokeColor="#DAA520"/>
+    
+    <!-- خطوط الشراع -->
+    <path
+        android:strokeColor="#DAA520"
+        android:strokeWidth="1"
+        android:pathData="M80,110 L80,75"/>
+    <path
+        android:strokeColor="#DAA520"
+        android:strokeWidth="1"
+        android:pathData="M95,110 L95,80"/>
+    <path
+        android:strokeColor="#DAA520"
+        android:strokeWidth="1"
+        android:pathData="M110,110 L110,85"/>
+    
+    <!-- الصاري -->
+    <path
+        android:strokeColor="#654321"
+        android:strokeWidth="2"
+        android:pathData="M75,110 L75,70"/>
+</vector>
+
