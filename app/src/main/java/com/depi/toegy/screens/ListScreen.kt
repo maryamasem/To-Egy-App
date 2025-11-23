@@ -58,7 +58,7 @@ import com.depi.toegy.api.TourismViewModel
 import com.depi.toegy.model.Place
 import com.depi.toegy.R
 import com.depi.toegy.model.FavouritePlace
-import com.depi.toegy.model.FavouritesViewModel
+import com.depi.toegy.viewModel.FavouritesViewModel
 import com.depi.toegy.ui.theme.BluePrimary
 import com.depi.toegy.ui.theme.NavyDark
 
@@ -156,9 +156,13 @@ fun PlacesListScreen(
 }
 
 @Composable
-fun PlaceCard(place: Place,favouriteViewModel: FavouritesViewModel) {
+fun PlaceCard(place: Place, favouriteViewModel: FavouritesViewModel) {
     val context = LocalContext.current
-    var isFavorite = favouriteViewModel.favourites.any { it.id == place.id }
+    // Properly observe the state to trigger recomposition when it changes
+    val favourites by favouriteViewModel.favourites
+    
+    // Check if this place is in favorites
+    val isFavorite = favourites.any { it.name == place.name || it.id == place.id }
 
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -261,8 +265,11 @@ fun PlaceCard(place: Place,favouriteViewModel: FavouritesViewModel) {
             }
 
             IconButton(onClick = {
-                isFavorite = !isFavorite
                 if (isFavorite) {
+                    // Remove from favorites
+                    favouriteViewModel.removeFavorite(place.name)
+                } else {
+                    // Add to favorites
                     favouriteViewModel.addFavourite(
                         FavouritePlace(
                             id = place.id,
@@ -275,8 +282,6 @@ fun PlaceCard(place: Place,favouriteViewModel: FavouritesViewModel) {
                             url = place.url
                         )
                     )
-                } else {
-                    favouriteViewModel.removeFavorite(place.id)
                 }
             }
             ) {

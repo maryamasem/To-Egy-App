@@ -42,7 +42,9 @@ import androidx.compose.ui.unit.sp
 import com.depi.toegy.R
 
 @Composable
-fun onBoardingScreen() {
+fun SplashScreenUI(
+    onNavigateToLogin: () -> Unit = {}
+) {
     val pagerState: PagerState = rememberPagerState(initialPage = 0) {
         3
     }
@@ -111,9 +113,8 @@ fun onBoardingScreen() {
                     enter = fadeIn(),
                     exit = fadeOut()
                 ) {
-                    Button(onClick = {// val intent=Intent(context,SignUpActivity::class.java)
-                        //context.startActivity(intent)
-                        //test
+                    Button(onClick = {
+                        onNavigateToLogin()
                     },
 
 
@@ -150,7 +151,7 @@ fun CustomIndicator(isSelected: Boolean) {
 @Preview(showBackground = true)
 @Composable
 fun onBoardingScreenPreview(){
-    onBoardingScreen()
+    SplashScreenUI()
 }
 
 

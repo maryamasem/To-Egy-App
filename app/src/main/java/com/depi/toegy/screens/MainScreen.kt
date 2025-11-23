@@ -34,7 +34,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.depi.toegy.model.FavouritesViewModel
+import com.depi.toegy.viewModel.FavouritesViewModel
 import com.depi.toegy.ui.theme.AccentYellow
 import com.depi.toegy.ui.theme.BackgroundWhite
 import com.depi.toegy.ui.theme.Grey
@@ -86,7 +86,7 @@ fun AppNavHost(
             composable(destination.route) {
                 when (destination) {
                     Destination.Home -> Home(navController)
-                    Destination.Profile -> ProfileScreen("Guest")
+                    Destination.Profile -> ProfileScreen()
                     Destination.Favourites -> FavoritesScreen(viewModel =favouritesViewModel)
                 }
             }

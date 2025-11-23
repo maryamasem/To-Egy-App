@@ -1,4 +1,5 @@
 package com.depi.toegy.screens
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -25,14 +26,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.depi.toegy.R
 import com.depi.toegy.model.FavouritePlace
-import com.depi.toegy.model.FavouritesViewModel
-
-
+import com.depi.toegy.viewModel.FavouritesViewModel
 
 @Composable
-fun FavoritesScreen(viewModel: FavouritesViewModel =viewModel()) {
-
-    val favorites =viewModel.favourites
+fun FavoritesScreen(viewModel: FavouritesViewModel = viewModel()) {
+    // Properly observe the state to trigger recomposition when it changes
+    val favorites by viewModel.favourites
 
     Column(
         modifier = Modifier
@@ -47,47 +46,88 @@ fun FavoritesScreen(viewModel: FavouritesViewModel =viewModel()) {
             fontWeight = FontWeight.Bold,
             color = Color(0xFF002B5B),
         )
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            items(favorites) { place ->
-                FavoriteCard(place = place,isFavorite=favorites.contains(place),onRemove={viewModel.removeFavorite(place.id)},onAddFavorite={viewModel.addFavourite(place)})}
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        if (favorites.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 32.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "No favorites yet",
+                    color = Color.Gray,
+                    fontSize = 16.sp
+                )
+            }
+        } else {
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                items(favorites) { place ->
+                    FavoriteCard(
+                        place = place,
+                        onRemove = {
+                            // Use place.name as document ID (matches repository implementation)
+                            viewModel.removeFavorite(place.id)
+                        },
+                        onAddFavorite = {
+                            viewModel.addFavourite(place)
+                        }
+                    )
+                }
             }
         }
     }
+}
 
 
 @Composable
-fun FavoriteCard(place: FavouritePlace, isFavorite: Boolean, onRemove :()-> Unit,onAddFavorite:( )->Unit) {
-    var favoriteState = isFavorite
+fun FavoriteCard(
+    place: FavouritePlace,
+    onRemove: () -> Unit,
+    onAddFavorite: () -> Unit
+) {
+    // All items in favorites screen are favorites, so we start with true
+    // The state will be updated when the item is removed from the list
+    var favoriteState by remember(place.name) { mutableStateOf(true) }
 
     Card(
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(6.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        modifier = Modifier.fillMaxWidth()
-            .padding(top = 30.dp, bottom =16.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, bottom = 8.dp)
     ) {
         Column {
             Box {
-                AsyncImage(model = place.img, contentDescription = place.name, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxWidth().height(150.dp).clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)))
+                AsyncImage(
+                    model = place.img,
+                    contentDescription = place.name,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp)
+                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                )
 
                 IconButton(
-                    onClick = { favoriteState =!favoriteState
-                        if(favoriteState)
-                            onAddFavorite() else
-                                onRemove()
-                             },
+                    onClick = {
+                        // Remove favorite - the snapshot listener will update the list
+                        onRemove()
+                    },
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(8.dp)
-                        .background(color =Color.White.copy(alpha = 0.5f),CircleShape)
-
+                        .background(
+                            color = Color.White.copy(alpha = 0.5f),
+                            shape = CircleShape
+                        )
                 ) {
                     Icon(
-                        imageVector =
-                           if(favoriteState)Icons.Filled.Favorite
-                        else
-                        Icons.Outlined.FavoriteBorder,
-                        contentDescription = null,
+                        imageVector = Icons.Filled.Favorite,
+                        contentDescription = "Remove from favorites",
                         tint = Color.Red
                     )
                 }

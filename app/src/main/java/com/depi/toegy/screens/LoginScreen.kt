@@ -11,9 +11,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -37,6 +40,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.depi.toegy.ui.theme.Grey
 import com.depi.toegy.ui.theme.NavyBlue
 import com.depi.toegy.ui.theme.ToEgyTheme
+import com.depi.toegy.ui.theme.Yellow
 import com.depi.toegy.viewModel.LoginViewModel
 
 @Composable
@@ -46,7 +50,6 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit = {},
     viewModel: LoginViewModel = viewModel()
 ) {
-    // حالات الحقول
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -61,7 +64,12 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()
         ) {
-            EgyptIcon()
+            Icon(
+                imageVector = Icons.Default.LocationOn,
+                contentDescription = "App icon",
+                tint = Yellow,
+                modifier = Modifier.size(40.dp)
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
             Text(

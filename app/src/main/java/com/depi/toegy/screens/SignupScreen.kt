@@ -13,9 +13,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -38,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.depi.toegy.ui.theme.NavyBlue
 import com.depi.toegy.ui.theme.ToEgyTheme
+import com.depi.toegy.ui.theme.Yellow
 import com.depi.toegy.viewModel.SignupViewModel
 
 @Composable
@@ -69,12 +73,15 @@ fun SignUpScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(vertical = 16.dp)
         ) {
-            // شعار
-            EgyptIcon()
+            Icon(
+                imageVector = Icons.Default.LocationOn,
+                contentDescription = "App icon",
+                tint = Yellow,
+                modifier = Modifier.size(40.dp)
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // العنوان والوصف
             Text(
                 text = "TO EGY",
                 fontSize = 28.sp,
@@ -121,7 +128,6 @@ fun SignUpScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // حقل البريد الإلكتروني
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -141,7 +147,6 @@ fun SignUpScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // حقل كلمة المرور
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
@@ -162,7 +167,6 @@ fun SignUpScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // حقل تأكيد كلمة المرور
             OutlinedTextField(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
@@ -183,11 +187,9 @@ fun SignUpScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // زر إنشاء الحساب
             Button(
                 onClick = {
                     errorMessage = null
-                    // التحقق من صحة البيانات
                     when {
                         name.isBlank() -> {
                             errorMessage = "Please enter your name"

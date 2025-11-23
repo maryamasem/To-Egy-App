@@ -8,7 +8,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.depi.toegy.model.FavouritePlace
-import com.depi.toegy.model.FavouritesViewModel
+import com.depi.toegy.viewModel.FavouritesViewModel
 
 @Composable
 fun FavouriteButton(

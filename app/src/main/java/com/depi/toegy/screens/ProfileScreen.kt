@@ -18,9 +18,15 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,9 +40,43 @@ import androidx.compose.ui.unit.sp
 import com.depi.toegy.ui.theme.NavyBlue
 import com.depi.toegy.ui.theme.Yellow
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 
 @Composable
-fun ProfileScreen(userName: String) {
+fun ProfileScreen() {
+    val auth = FirebaseAuth.getInstance()
+    val db = FirebaseFirestore.getInstance()
+    var userName by remember { mutableStateOf("Guest") }
+    var isLoading by remember { mutableStateOf(true) }
+    
+    // Fetch user name from Firestore (stored during signup in SignupScreen)
+    LaunchedEffect(Unit) {
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            try {
+                // Get the user document from Firestore
+                // The name is stored here during signup in SignupViewModel
+                val userDoc = db.collection("users")
+                    .document(currentUser.uid)
+                    .get()
+                    .await()
+                
+                // Get the name field that was stored during signup
+                // If name exists, use it; otherwise fallback to email username
+                userName = userDoc.getString("name") 
+                    ?: currentUser.email?.substringBefore("@") 
+                    ?: "Guest"
+            } catch (e: Exception) {
+                // Fallback to email if name not found or error occurs
+                userName = currentUser.email?.substringBefore("@") ?: "Guest"
+            }
+        } else {
+            userName = "Guest"
+        }
+        isLoading = false
+    }
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -67,13 +107,20 @@ fun ProfileScreen(userName: String) {
 
             Spacer(modifier = Modifier.width(16.dp))
             Column {
-                Text(
-                    text = userName,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = NavyBlue,
-                    textAlign = TextAlign.Start
-                )
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = NavyBlue
+                    )
+                } else {
+                    Text(
+                        text = userName,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = NavyBlue,
+                        textAlign = TextAlign.Start
+                    )
+                }
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Welcome to your profile!",
@@ -88,11 +135,7 @@ fun ProfileScreen(userName: String) {
 
         Button(
             onClick = {
-//              FirebaseAuth.getInstance().signOut()
-//                navController.navigate("login") {
-//                    popUpTo(0)
-//                }
-
+             FirebaseAuth.getInstance().signOut()
             },
             colors = ButtonDefaults.buttonColors(containerColor = NavyBlue),
             modifier = Modifier
@@ -120,6 +163,5 @@ fun ProfileScreen(userName: String) {
 @Preview(showSystemUi = true)
 @Composable
 private fun ProfileScreenPreview() {
-    ProfileScreen(userName = "Guest")
-
+    ProfileScreen()
 }
