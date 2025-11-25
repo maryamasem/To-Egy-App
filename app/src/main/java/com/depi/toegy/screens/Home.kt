@@ -21,18 +21,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextFieldDefaults.contentPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,29 +47,25 @@ import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.depi.toegy.R
-
 import com.depi.toegy.ui.theme.BackgroundWhite
 import com.depi.toegy.ui.theme.Grey
 import com.depi.toegy.ui.theme.NavyBlue
-
 import com.depi.toegy.ui.theme.Yellow
 
 @Composable
 fun Home(navController: NavController) {
-   // val vm = rememberSaveable { TourismViewModel() }
 
-    Column (
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(contentPadding())
-            .padding(horizontal = 16.dp)
+            .padding(16.dp)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         Icon(
             imageVector = Icons.Default.LocationOn,
-            contentDescription = "App icon",
+            contentDescription = null,
             tint = Yellow,
             modifier = Modifier.size(40.dp)
         )
@@ -96,57 +89,50 @@ fun Home(navController: NavController) {
 
         Spacer(Modifier.height(24.dp))
 
-
         Text(
             text = "Popular attraction",
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
             color = NavyBlue,
             modifier = Modifier.align(Alignment.Start)
-
         )
+
         Spacer(Modifier.height(8.dp))
 
-
-
-
-        Card (
-            onClick = {
-
-            },
+        Card(
+            onClick = {},
             shape = RoundedCornerShape(16.dp),
             elevation = CardDefaults.cardElevation(4.dp),
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxWidth()
         ) {
             Box {
                 Image(
                     painter = painterResource(id = R.drawable.egy_museum),
-                    contentDescription = "Egyptian Museum",
+                    contentDescription = null,
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxWidth()
                         .height(220.dp)
-
                 )
+
                 Box(
                     modifier = Modifier
-                        .align (Alignment.BottomStart)
-                        .fillMaxSize()
+                        .align(Alignment.BottomStart)
+                        .fillMaxWidth()
                         .background(NavyBlue)
                         .padding(12.dp)
-                ){
+                ) {
                     Text(
                         text = "Egyptian Museum",
                         color = BackgroundWhite,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium
-
                     )
                 }
             }
         }
-        Spacer(Modifier.height(24.dp))
 
+        Spacer(Modifier.height(24.dp))
 
         Text(
             text = "Categories",
@@ -159,53 +145,51 @@ fun Home(navController: NavController) {
         Spacer(Modifier.height(8.dp))
 
         Column {
-            Row (
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxSize()
-            ){
-                CategoryItem(icon = R.drawable.museum_ic , label = "Museums"){
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                CategoryItem(R.drawable.museum_ic, "Museums") {
                     navController.navigate("ListScreen/museums")
                 }
-                CategoryItem(icon = R.drawable.beachs_ic, label = "Beaches"){
+                CategoryItem(R.drawable.beachs_ic, "Beaches") {
                     navController.navigate("ListScreen/beaches")
                 }
-                CategoryItem(icon = R.drawable.resturant_ic, label = "Restaurant"){
+                CategoryItem(R.drawable.resturant_ic, "Restaurant") {
                     navController.navigate("ListScreen/restaurants")
                 }
-
             }
+
             Spacer(Modifier.height(8.dp))
-            Row (
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxSize()
-            ){
-                CategoryItem(icon = R.drawable.hotel_ic , label = "Hotels"){
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                CategoryItem(R.drawable.hotel_ic, "Hotels") {
                     navController.navigate("ListScreen/hotels")
                 }
-                CategoryItem(icon = R.drawable.history_ic, label = "History"){
+                CategoryItem(R.drawable.history_ic, "History") {
                     navController.navigate("ListScreen/history")
                 }
-                CategoryItem(icon = R.drawable.airport_ic, label = "Airports"){
+                CategoryItem(R.drawable.airport_ic, "Airports") {
                     navController.navigate("ListScreen/airports")
                 }
             }
-
-
         }
     }
 }
+
 @Composable
-fun CategoryItem (icon: Int, label: String,onClick: () -> Unit){
-    Column (
+fun CategoryItem(icon: Int, label: String, onClick: () -> Unit) {
+    Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .width(100.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(Color(0xFFEBEEFA))
             .padding(vertical = 16.dp)
-            .clickable{
-                onClick()
-            }
+            .clickable { onClick() }
     ) {
         Image(
             painter = painterResource(id = icon),
@@ -220,46 +204,39 @@ fun CategoryItem (icon: Int, label: String,onClick: () -> Unit){
 @Composable
 fun MuseumOpeningBannerAnimated(onClick: () -> Unit) {
 
-    val i = Intent(Intent.ACTION_VIEW, "https://www.visit-gem.com/en/home".toUri())
     val context = LocalContext.current
+    val intent = Intent(Intent.ACTION_VIEW, "https://www.visit-gem.com/en/home".toUri())
 
     val alphaAnim = remember { Animatable(0f) }
 
     LaunchedEffect(Unit) {
-        alphaAnim.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(durationMillis = 1200)
-        )
+        alphaAnim.animateTo(1f, animationSpec = tween(1200))
     }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
             .graphicsLayer(alpha = alphaAnim.value)
             .clip(RoundedCornerShape(20.dp))
             .background(NavyBlue)
             .padding(16.dp)
     ) {
         Column {
-            Text(text = "🎉 Grand Opening!", fontSize = 18.sp, color = Color.White)
+            Text("🎉 Grand Opening!", fontSize = 18.sp, color = Color.White)
             Spacer(Modifier.height(6.dp))
             Text(
-                text = "The Egyptian Museum is now officially open...",
+                "The Egyptian Museum is now officially open...",
                 color = Color.White,
                 fontSize = 14.sp
             )
-
             Spacer(Modifier.height(10.dp))
 
             Button(
-                onClick = {
-                    context.startActivity(i)
-                },
+                onClick = { context.startActivity(intent) },
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Yellow)
             ) {
-                Text(text = "Show Details", color = NavyBlue)
+                Text("Show Details", color = NavyBlue)
             }
         }
     }
@@ -267,14 +244,6 @@ fun MuseumOpeningBannerAnimated(onClick: () -> Unit) {
 
 @Preview(showSystemUi = true)
 @Composable
-fun HomePreview (){
+fun HomePreview() {
     Home(navController = rememberNavController())
 }
-
-
-
-
-
-
-
-
