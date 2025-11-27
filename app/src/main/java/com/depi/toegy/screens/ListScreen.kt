@@ -1,6 +1,5 @@
 package com.depi.toegy.screens
 
-
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -74,20 +73,17 @@ fun PlacesListScreen(
 
     Log.d("cat", "PlacesListScreen: $category")
     val vm: TourismViewModel = viewModel()
-   // vm.getPlaces(category)
 
     LaunchedEffect(category) {
         vm.getPlaces(category)
     }
 
-
     val stateofApi = vm.state
     var isLoading = vm.isLoading
 
-
     val configuration = LocalConfiguration.current
     val screenHeightDp = configuration.screenHeightDp
-    val cardHeight = 100 // تقريبي: ارتفاع الكارت + المسافات
+    val cardHeight = 100
     val shimmerItemCount = (screenHeightDp / cardHeight).coerceIn(3, 10)
 
     var searchQuery by remember { mutableStateOf("") }
@@ -112,7 +108,6 @@ fun PlacesListScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 🔍 Search Field
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
@@ -128,28 +123,33 @@ fun PlacesListScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         val places = stateofApi
+
+        val filteredPlaces = places.filter { place ->
+            place.name.contains(searchQuery, ignoreCase = true) ||
+                    place.location.contains(searchQuery, ignoreCase = true)
+        }
+
         val favoritesViewModel: FavoritesViewModel = viewModel()
+
         if (isLoading ) {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 items(shimmerItemCount) {
                     AnimatedShimmer()
                 }
             }
-        }
-         else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(places) { place ->
-                        PlaceCard(
-                            place = place,
-                            favoritesViewModel = favoritesViewModel
-                        )
-                    }
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(filteredPlaces) { place ->
+                    PlaceCard(
+                        place = place,
+                        favoritesViewModel = favoritesViewModel
+                    )
                 }
-
-          }
+            }
+        }
     }
 }
 
@@ -166,7 +166,7 @@ fun PlaceCard(place: Place, favoritesViewModel: FavoritesViewModel) {
         modifier = Modifier
             .fillMaxWidth()
             .background(BackgroundWhite)
-            .clickable { /* Navigate to details screen */ },
+            .clickable { },
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Row(
@@ -185,14 +185,11 @@ fun PlaceCard(place: Place, favoritesViewModel: FavoritesViewModel) {
                 modifier = Modifier
                     .size(100.dp)
                     .clip(RoundedCornerShape(12.dp))
-
             ) {
                 when (painter.state) {
                     is AsyncImagePainter.State.Loading -> {
-                        // أثناء التحميل
                         Box(
-                            modifier = Modifier
-                                .fillMaxSize(),
+                            modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
                             CircularProgressIndicator(
@@ -203,7 +200,6 @@ fun PlaceCard(place: Place, favoritesViewModel: FavoritesViewModel) {
                     }
 
                     is AsyncImagePainter.State.Error -> {
-                        // لو الصورة فشلت في التحميل
                         Image(
                             painter = painterResource(R.drawable.noimage),
                             contentDescription = "Error",
@@ -214,13 +210,9 @@ fun PlaceCard(place: Place, favoritesViewModel: FavoritesViewModel) {
                         )
                     }
 
-                    else -> {
-                        // لما الصورة تتحمل
-                        SubcomposeAsyncImageContent()
-                    }
+                    else -> SubcomposeAsyncImageContent()
                 }
             }
-
 
             Spacer(modifier = Modifier.width(12.dp))
 
@@ -252,18 +244,13 @@ fun PlaceCard(place: Place, favoritesViewModel: FavoritesViewModel) {
                         )
                     )
                 }
-            }
-            ) {
-                Icon(imageVector = if(isFavorite)
-                    Icons.Default.Favorite else
-                Icons.Default.FavoriteBorder, contentDescription = "Favourite",
-                    tint = if(isFavorite)
-                        Yellow else Color.Gray
+            }) {
+                Icon(
+                    imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = "Favourite",
+                    tint = if (isFavorite) Yellow else Color.Gray
                 )
-
             }
         }
     }
 }
-
-
