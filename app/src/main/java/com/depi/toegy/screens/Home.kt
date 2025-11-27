@@ -27,6 +27,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextFieldDefaults.contentPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -54,36 +55,19 @@ import com.depi.toegy.ui.theme.Yellow
 
 @Composable
 fun Home(navController: NavController) {
+   // val vm = rememberSaveable { TourismViewModel() }
 
-    Column(
+    Column (
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(contentPadding())
+            .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Icon(
-            imageVector = Icons.Default.LocationOn,
-            contentDescription = null,
-            tint = Yellow,
-            modifier = Modifier.size(40.dp)
-        )
 
-        Text(
-            text = "TO EGY",
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
-            color = NavyBlue
-        )
-
-        Text(
-            text = "Your Smart Guide in Egypt",
-            color = Grey,
-            fontSize = 12.sp
-        )
-
-        Spacer(Modifier.height(24.dp))
+        EgyptIcon(Modifier)
 
         MuseumOpeningBannerAnimated {}
 
@@ -95,6 +79,7 @@ fun Home(navController: NavController) {
             fontSize = 20.sp,
             color = NavyBlue,
             modifier = Modifier.align(Alignment.Start)
+
         )
 
         Spacer(Modifier.height(8.dp))
@@ -108,13 +93,13 @@ fun Home(navController: NavController) {
             Box {
                 Image(
                     painter = painterResource(id = R.drawable.egy_museum),
-                    contentDescription = null,
+                    contentDescription = "Egyptian Museum",
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxSize()
                         .height(220.dp)
-                )
 
+                )
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
@@ -158,8 +143,8 @@ fun Home(navController: NavController) {
                 CategoryItem(R.drawable.resturant_ic, "Restaurant") {
                     navController.navigate("ListScreen/restaurants")
                 }
-            }
 
+            }
             Spacer(Modifier.height(8.dp))
 
             Row(
@@ -176,6 +161,8 @@ fun Home(navController: NavController) {
                     navController.navigate("ListScreen/airports")
                 }
             }
+
+
         }
     }
 }
@@ -222,13 +209,14 @@ fun MuseumOpeningBannerAnimated(onClick: () -> Unit) {
             .padding(16.dp)
     ) {
         Column {
-            Text("🎉 Grand Opening!", fontSize = 18.sp, color = Color.White)
+            Text(text = "🎉 Grand Opening!", fontSize = 18.sp, color = Color.White)
             Spacer(Modifier.height(6.dp))
             Text(
-                "The Egyptian Museum is now officially open...",
+                text = "The Egyptian Museum is now officially open...",
                 color = Color.White,
                 fontSize = 14.sp
             )
+
             Spacer(Modifier.height(10.dp))
 
             Button(
@@ -236,7 +224,7 @@ fun MuseumOpeningBannerAnimated(onClick: () -> Unit) {
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Yellow)
             ) {
-                Text("Show Details", color = NavyBlue)
+                Text(text = "Show Details", color = NavyBlue)
             }
         }
     }

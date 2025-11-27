@@ -15,7 +15,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -37,7 +36,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,7 +44,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.depi.toegy.ui.theme.NavyBlue
 import com.depi.toegy.ui.theme.ToEgyTheme
-import com.depi.toegy.ui.theme.Yellow
 import com.depi.toegy.viewModel.SignupViewModel
 
 @Composable
@@ -81,21 +78,7 @@ fun SignUpScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(vertical = 16.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.LocationOn,
-                contentDescription = "App icon",
-                tint = Yellow,
-                modifier = Modifier.size(40.dp)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "TO EGY",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = NavyBlue
-            )
+            EgyptIcon()
             Text(
                 text = "Create Your Account",
                 fontSize = 14.sp,
@@ -219,22 +202,27 @@ fun SignUpScreen(
                             errorMessage = "Please enter your name"
                             return@Button
                         }
+
                         email.isBlank() -> {
                             errorMessage = "Please enter your email"
                             return@Button
                         }
+
                         password.isBlank() -> {
                             errorMessage = "Please enter your password"
                             return@Button
                         }
+
                         password.length < 6 -> {
                             errorMessage = "Password must be at least 6 characters"
                             return@Button
                         }
+
                         password != confirmPassword -> {
                             errorMessage = "Passwords do not match"
                             return@Button
                         }
+
                         else -> {
                             isLoading = true
                             viewModel.registerUser(
@@ -284,13 +272,7 @@ fun SignUpScreen(
         }
     }
 }
-
-@Preview(
-    showBackground = true,
-    name = "Sign Up Screen Preview",
-    widthDp = 360,
-    heightDp = 640
-)
+@Preview(showBackground = true)
 @Composable
 fun SignUpScreenPreview() {
     ToEgyTheme {

@@ -76,7 +76,7 @@ fun AppNavigation(
         }
         
         composable(Screen.Login.route) {
-            _root_ide_package_.com.depi.toegy.screens.AuthNavHost(
+            _root_ide_package_.com.depi.toegy.navigation.AuthNavHost(
                 onAuthSuccess = {
                     navController.navigate(Screen.Main.route) {
                         popUpTo(0) { inclusive = true }

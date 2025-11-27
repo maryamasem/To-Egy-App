@@ -34,6 +34,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,12 +58,12 @@ import coil.request.ImageRequest
 import com.depi.toegy.api.TourismViewModel
 import com.depi.toegy.model.Place
 import com.depi.toegy.R
-import com.depi.toegy.model.FavouritePlace
-import com.depi.toegy.viewModel.FavouritesViewModel
+import com.depi.toegy.model.FavoritePlace
+import com.depi.toegy.ui.theme.BackgroundWhite
+import com.depi.toegy.viewModel.FavoritesViewModel
 import com.depi.toegy.ui.theme.BluePrimary
 import com.depi.toegy.ui.theme.NavyDark
-
-
+import com.depi.toegy.ui.theme.Yellow
 
 @Composable
 fun PlacesListScreen(
@@ -80,11 +81,8 @@ fun PlacesListScreen(
     }
 
 
-
-
     val stateofApi = vm.state
     var isLoading = vm.isLoading
-
 
 
     val configuration = LocalConfiguration.current
@@ -129,7 +127,8 @@ fun PlacesListScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-         val places = stateofApi
+        val places = stateofApi
+        val favoritesViewModel: FavoritesViewModel = viewModel()
         if (isLoading ) {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 items(shimmerItemCount) {
@@ -138,15 +137,14 @@ fun PlacesListScreen(
             }
         }
          else {
-         val favouriteViewModel : FavouritesViewModel=viewModel()
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(places) { place ->
                         PlaceCard(
-                            place=place,
-                            favouriteViewModel=favouriteViewModel
+                            place = place,
+                            favoritesViewModel = favoritesViewModel
                         )
                     }
                 }
@@ -156,20 +154,18 @@ fun PlacesListScreen(
 }
 
 @Composable
-fun PlaceCard(place: Place, favouriteViewModel: FavouritesViewModel) {
+fun PlaceCard(place: Place, favoritesViewModel: FavoritesViewModel) {
     val context = LocalContext.current
-    // Properly observe the state to trigger recomposition when it changes
-    val favourites by favouriteViewModel.favourites
-    
-    // Check if this place is in favorites
-    val isFavorite = favourites.any { it.name == place.name || it.id == place.id }
+    val favorites by favoritesViewModel.favoritesState.collectAsState()
+    val resolvedId = place.id.ifBlank { place.name }
+    val isFavorite = favorites.any { it.id == resolvedId }
 
     Card(
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFFFFFFFF))
+            .background(BackgroundWhite)
             .clickable { /* Navigate to details screen */ },
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
@@ -209,7 +205,7 @@ fun PlaceCard(place: Place, favouriteViewModel: FavouritesViewModel) {
                     is AsyncImagePainter.State.Error -> {
                         // لو الصورة فشلت في التحميل
                         Image(
-                            painter = painterResource(R.drawable.pyramids),
+                            painter = painterResource(R.drawable.noimage),
                             contentDescription = "Error",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
@@ -226,29 +222,6 @@ fun PlaceCard(place: Place, favouriteViewModel: FavouritesViewModel) {
             }
 
 
-//            AsyncImage(
-//                model = ImageRequest.Builder(context)
-//                    .data(place.imageUrl)
-//                    .placeholder(R.drawable.dog)
-//                    .setHeader("User-Agent", "MyToEgyptApp/1.0")
-//                    .error(R.drawable.pyramids)
-//                    .crossfade(true)
-//                    .build(),
-//                contentDescription = place.name,
-//                contentScale = ContentScale.Crop,
-//                modifier = Modifier
-//                    .size(60.dp)
-//                    .clip(RoundedCornerShape(12.dp))
-//            )
-
-//            Image(
-//                painter = painterResource(id = place.pic),
-//                contentDescription = place.name,
-//                contentScale = ContentScale.Crop,
-//                modifier = Modifier
-//                    .size(80.dp)
-//                    .clip(RoundedCornerShape(12.dp))
-//            )
             Spacer(modifier = Modifier.width(12.dp))
 
             Column(modifier = Modifier.weight(1f)) {
@@ -265,18 +238,14 @@ fun PlaceCard(place: Place, favouriteViewModel: FavouritesViewModel) {
             }
 
             IconButton(onClick = {
-                if (isFavorite) {
-                    // Remove from favorites
-                    favouriteViewModel.removeFavorite(place.name)
-                } else {
-                    // Add to favorites
-                    favouriteViewModel.addFavourite(
-                        FavouritePlace(
-                            id = place.id,
+                if (resolvedId.isNotBlank()) {
+                    favoritesViewModel.toggleFavorite(
+                        FavoritePlace(
+                            id = resolvedId,
                             name = place.name,
                             lat = place.lat,
                             long = place.long,
-                            desc=place.desc,
+                            desc = place.desc,
                             location = place.location,
                             img = place.img,
                             url = place.url
@@ -289,7 +258,7 @@ fun PlaceCard(place: Place, favouriteViewModel: FavouritesViewModel) {
                     Icons.Default.Favorite else
                 Icons.Default.FavoriteBorder, contentDescription = "Favourite",
                     tint = if(isFavorite)
-                Color(0xFFFFC107) else Color.Gray
+                        Yellow else Color.Gray
                 )
 
             }
@@ -297,11 +266,4 @@ fun PlaceCard(place: Place, favouriteViewModel: FavouritesViewModel) {
     }
 }
 
-
-
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//fun PreviewScreen(){
-//    PlacesListScreen()
-//}
 

@@ -59,21 +59,13 @@ fun ForgotPasswordScreen(
         ) {
             EgyptIcon()
 
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "TO EGY",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = NavyBlue
-            )
-
             Text(
                 text = "Reset Your Password",
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                 fontSize = 14.sp
             )
 
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // عرض رسالة الخطأ
             viewModel.errorMessage?.let { error ->
@@ -158,20 +150,10 @@ fun ForgotPasswordScreen(
 }
 
 @Preview(
-    showBackground = true,
-    name = "Forgot Password Screen Preview",
-    widthDp = 360,
-    heightDp = 640
+    showBackground = true, showSystemUi = true
 )
 @Composable
 fun ForgotPasswordScreenPreview() {
-    ToEgyTheme {
-        Surface(
-            color = MaterialTheme.colorScheme.background,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            ForgotPasswordScreen()
-        }
-    }
+    ForgotPasswordScreen()
 }
 

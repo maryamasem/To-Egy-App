@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -38,18 +36,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.depi.toegy.ui.theme.Grey
 import com.depi.toegy.ui.theme.NavyBlue
 import com.depi.toegy.ui.theme.ToEgyTheme
-import com.depi.toegy.ui.theme.Yellow
 import com.depi.toegy.viewModel.LoginViewModel
 
 @Composable
@@ -78,29 +72,7 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Icon(
-                imageVector = Icons.Default.LocationOn,
-                contentDescription = "App icon",
-                tint = Yellow,
-                modifier = Modifier.size(40.dp)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "TO EGY",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = NavyBlue
-            )
-
-            Text(
-                text = "Your Smart Guide in Egypt",
-                color = Grey,
-                fontSize = 12.sp
-            )
-
-            Spacer(modifier = Modifier.height(28.dp))
+            EgyptIcon(Modifier)
 
             // عرض رسالة الخطأ
             viewModel.errorMessage?.let { error ->
@@ -133,7 +105,6 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // ---------------  هنا تعديل الباسورد فقط ---------------
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
@@ -164,7 +135,6 @@ fun LoginScreen(
                     unfocusedContainerColor = Color(0xFFF5F7FA)
                 )
             )
-            // -----------------------------------------------------
 
             Spacer(modifier = Modifier.height(16.dp))
 

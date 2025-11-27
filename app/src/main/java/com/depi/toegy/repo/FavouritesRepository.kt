@@ -1,104 +1,116 @@
 package com.depi.toegy.repo
 
-import com.depi.toegy.model.FavouritePlace
+import com.depi.toegy.model.FavoritePlace
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 
-class FavouritesRepository {
+sealed interface FavoriteResult<out T> {
+    data class Success<T>(val data: T) : FavoriteResult<T>
+    data class Error(val message: String, val throwable: Throwable? = null) : FavoriteResult<Nothing>
+}
 
-    private val db = FirebaseFirestore.getInstance()
+class FavoritesRepository(
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+) {
+    private val usersCollection get() = firestore.collection("users")
 
-    fun addToFavourites(
-        userId: String,
-        place: FavouritePlace,
-        onResult: (Boolean, String?) -> Unit
-    ) {
-        // Convert FavouritePlace to Map for Firestore
-        val placeData = hashMapOf<String, Any?>(
-            "id" to place.id,
-            "name" to place.name,
-            "desc" to place.desc,
-            "location" to place.location,
-            "img" to place.img
-        )
-        
-        // Add optional fields only if they're not null
-        place.lat?.let { placeData["lat"] = it }
-        place.long?.let { placeData["long"] = it }
-        place.url?.let { placeData["url"] = it }
-        
-        db.collection("users")
-            .document(userId)
-            .collection("favourites")
-            .document(place.name)
-            .set(placeData)
-            .addOnSuccessListener { onResult(true, null) }
-            .addOnFailureListener { 
-                it.printStackTrace()
-                onResult(false, it.message) 
+    suspend fun addToFavorites(userId: String, place: FavoritePlace): FavoriteResult<Unit> {
+        val documentId = place.id.ifBlank { place.name }.takeIf { it.isNotBlank() }
+            ?: return FavoriteResult.Error("Missing place id or name.")
+
+        return runCatching {
+            usersCollection
+                .document(userId)
+                .collection("favorites")
+                .document(documentId)
+                .set(place.copy(id = documentId))
+                .await()
+        }.fold(
+            onSuccess = { FavoriteResult.Success(Unit) },
+            onFailure = {
+                FavoriteResult.Error(it.localizedMessage ?: "Unable to add favorite.", it)
             }
+        )
     }
 
-    fun removeFavourite(
-        userId: String,
-        placeId: String,
-        onResult: (Boolean, String?) -> Unit
-    ) {
-        db.collection("users")
-            .document(userId)
-            .collection("favourites")
-            .document(placeId)
-            .delete()
-            .addOnSuccessListener { onResult(true, null) }
-            .addOnFailureListener { onResult(false, it.message) }
+    suspend fun removeFavorite(userId: String, placeId: String): FavoriteResult<Unit> {
+        if (placeId.isBlank()) {
+            return FavoriteResult.Error("Missing favorite id.")
+        }
+
+        return runCatching {
+            usersCollection
+                .document(userId)
+                .collection("favorites")
+                .document(placeId)
+                .delete()
+                .await()
+        }.fold(
+            onSuccess = { FavoriteResult.Success(Unit) },
+            onFailure = {
+                FavoriteResult.Error(it.localizedMessage ?: "Unable to remove favorite.", it)
+            }
+        )
     }
 
-    fun getFavourites(userId: String, onResult: (List<FavouritePlace>) -> Unit): ListenerRegistration {
-        return db.collection("users")
+    suspend fun isFavorite(userId: String, placeId: String): FavoriteResult<Boolean> {
+        if (placeId.isBlank()) {
+            return FavoriteResult.Error("Missing favorite id.")
+        }
+        return runCatching {
+            usersCollection
+                .document(userId)
+                .collection("favorites")
+                .document(placeId)
+                .get()
+                .await()
+                .exists()
+        }.fold(
+            onSuccess = { FavoriteResult.Success(it) },
+            onFailure = {
+                FavoriteResult.Error(it.localizedMessage ?: "Unable to check favorite.", it)
+            }
+        )
+    }
+
+    fun getFavorites(userId: String): Flow<FavoriteResult<List<FavoritePlace>>> = callbackFlow {
+        val registration = usersCollection
             .document(userId)
-            .collection("favourites")
+            .collection("favorites")
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
-                    // Log error for debugging
-                    error.printStackTrace()
-                    onResult(emptyList())
+                    trySend(
+                        FavoriteResult.Error(
+                            error.localizedMessage ?: "Unable to load favorites.",
+                            error
+                        )
+                    )
                     return@addSnapshotListener
                 }
-                
-                if (snapshot != null) {
-                    if (snapshot.isEmpty) {
-                        // Empty collection
-                        onResult(emptyList())
-                    } else {
-                        // Convert documents to FavouritePlace objects
-                        val list = mutableListOf<FavouritePlace>()
-                        for (document in snapshot.documents) {
-                            try {
-                                val data = document.data
-                                if (data != null) {
-                                    val place = FavouritePlace(
-                                        id = data["id"] as? String ?: document.id,
-                                        name = data["name"] as? String ?: "",
-                                        lat = (data["lat"] as? Number)?.toDouble(),
-                                        long = (data["long"] as? Number)?.toDouble(),
-                                        desc = data["desc"] as? String ?: "",
-                                        location = data["location"] as? String ?: "",
-                                        img = data["img"] as? String ?: "",
-                                        url = data["url"] as? String
-                                    )
-                                    list.add(place)
-                                }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                                // Continue with other documents
-                            }
-                        }
-                        onResult(list)
-                    }
-                } else {
-                    // Null snapshot
-                    onResult(emptyList())
+
+                if (snapshot == null) {
+                    trySend(FavoriteResult.Success(emptyList()))
+                    return@addSnapshotListener
                 }
+
+                val places = snapshot.documents.mapNotNull { it.toFavoritePlace() }
+                trySend(FavoriteResult.Success(places))
             }
+
+        awaitClose { registration.remove() }
+    }
+
+    private fun DocumentSnapshot.toFavoritePlace(): FavoritePlace? {
+        return runCatching {
+            val place = toObject(FavoritePlace::class.java) ?: FavoritePlace()
+            val resolvedId = place.id.ifBlank { id }
+            place.copy(id = resolvedId)
+        }.getOrElse {
+            null
+        }
     }
 }

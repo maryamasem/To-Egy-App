@@ -53,8 +53,6 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.ads.mobile.sdk)
-    implementation(libs.androidx.espresso.core)
-    implementation(libs.androidx.animation.core.lint)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -68,6 +66,8 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
     implementation("androidx.navigation:navigation-compose:2.9.4")
     implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("androidx.compose.material:material-icons-extended:1.6.7")
+
 
     //Firebase
     implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
@@ -75,7 +75,5 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     //FireStore
     implementation("com.google.firebase:firebase-firestore")
-    implementation("androidx.compose.material:material-icons-extended:1.6.0")
-
 
 }

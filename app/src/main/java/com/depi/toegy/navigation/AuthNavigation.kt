@@ -1,4 +1,4 @@
-package com.depi.toegy.screens
+package com.depi.toegy.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -28,7 +28,7 @@ fun AuthNavHost(
     ) {
         composable(AuthScreen.Login.route) {
             val loginViewModel: LoginViewModel = viewModel()
-            LoginScreen(
+            _root_ide_package_.com.depi.toegy.screens.LoginScreen(
                 onNavigateToSignUp = {
                     navController.navigate(AuthScreen.SignUp.route)
                 },
@@ -44,7 +44,7 @@ fun AuthNavHost(
 
         composable(AuthScreen.SignUp.route) {
             val signupViewModel: SignupViewModel = viewModel()
-            SignUpScreen(
+            _root_ide_package_.com.depi.toegy.screens.SignUpScreen(
                 onNavigateToLogin = {
                     navController.navigate(AuthScreen.Login.route) {
                         popUpTo(AuthScreen.Login.route) { inclusive = false }
@@ -59,7 +59,7 @@ fun AuthNavHost(
 
         composable(AuthScreen.ForgotPassword.route) {
             val forgotPasswordViewModel: ForgotPasswordViewModel = viewModel()
-            ForgotPasswordScreen(
+            _root_ide_package_.com.depi.toegy.screens.ForgotPasswordScreen(
                 onNavigateToLogin = {
                     navController.navigate(AuthScreen.Login.route) {
                         popUpTo(AuthScreen.Login.route) { inclusive = false }

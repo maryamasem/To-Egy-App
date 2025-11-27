@@ -1,15 +1,12 @@
 package com.depi.toegy.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarDefaults
@@ -23,20 +20,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.depi.toegy.viewModel.FavouritesViewModel
-import com.depi.toegy.ui.theme.AccentYellow
-import com.depi.toegy.ui.theme.BackgroundWhite
+import com.depi.toegy.viewModel.FavoritesViewModel
 import com.depi.toegy.ui.theme.Grey
 import com.depi.toegy.ui.theme.NavyBlue
 import com.depi.toegy.ui.theme.ToEgyTheme
@@ -53,11 +45,11 @@ enum class Destination(
         label = "Home",
         contentDescription = "Home Page"
     ),
-    Favourites(
-        route = "favourites",
+    Favorites(
+        route = "favorites",
         icon = Icons.Default.FavoriteBorder,
-        label = "Favourites",
-        contentDescription = "Favourites Page"
+        label = "Favorites",
+        contentDescription = "Favorites Page"
     ),
     Profile(
         route = "profile",
@@ -66,7 +58,7 @@ enum class Destination(
         contentDescription = "Profile Page"
     );
     companion object {
-        val entries = listOf(Home, Favourites, Profile)
+        val entries = listOf(Home, Favorites, Profile)
     }
 
 }
@@ -76,7 +68,7 @@ fun AppNavHost(
     startDestination: Destination,
     modifier: Modifier = Modifier
 ) {
-    val favouritesViewModel: FavouritesViewModel= viewModel()
+    val favoritesViewModel: FavoritesViewModel = viewModel()
     NavHost(
         navController = navController,
         startDestination = startDestination.route,
@@ -87,7 +79,7 @@ fun AppNavHost(
                 when (destination) {
                     Destination.Home -> Home(navController)
                     Destination.Profile -> ProfileScreen()
-                    Destination.Favourites -> FavoritesScreen(viewModel =favouritesViewModel)
+                    Destination.Favorites -> FavoriteScreen(viewModel = favoritesViewModel)
                 }
             }
         }
