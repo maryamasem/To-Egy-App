@@ -167,12 +167,6 @@ private fun FavoriteCard(
                     fontSize = 18.sp,
                     color = TextBlack
                 )
-                Text(
-                    modifier = Modifier.padding(top = 6.dp),
-                    text = place.desc,
-                    color = Color.Gray,
-                    fontSize = 14.sp
-                )
             }
         }
     }

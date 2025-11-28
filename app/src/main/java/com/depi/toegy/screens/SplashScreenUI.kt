@@ -40,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.depi.toegy.R
+import com.depi.toegy.ui.theme.NavyBlue
 
 @Composable
 fun SplashScreenUI(
@@ -48,8 +49,8 @@ fun SplashScreenUI(
     val pagerState: PagerState = rememberPagerState(initialPage = 0) {
         3
     }
-    val coroutineScope= rememberCoroutineScope()
-    val context= LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
     Box(modifier = Modifier.fillMaxHeight()) {
         HorizontalPager(state = pagerState) { page ->
             Box(
@@ -58,24 +59,27 @@ fun SplashScreenUI(
             ) {
                 var resource: Int = R.drawable.pyramids
                 var text: String = ""
-                var description:String=""
+                var description: String = ""
 
                 when (page) {
                     0 -> {
                         text = "TO EGY"
                         resource = R.drawable.pyramids
-                        description="Your Smart Guide in Egypt"
+                        description = "Your Smart Guide in Egypt"
 
                     }
+
                     1 -> {
                         text = "Discover Attraction"
                         resource = R.drawable.museum
-                        description="Explore Egypt like never before!         To EGY  is your personal travel guide  helping you discover the most famous attractions, hidden gems, and cultural landmarks across Egypt From ancient temples and museums to breathtaking beaches and vibrant local spots. "
+                        description =
+                            "Explore Egypt like never before! To EGY is your personal travel guide  helping you discover the most famous attractions, hidden gems, and cultural landmarks across Egypt From ancient temples and museums to breathtaking beaches and vibrant local spots. "
                     }
+
                     2 -> {
                         text = "Plan Your Trips"
                         resource = R.drawable.nile
-                        description="Your next adventure starts here!" +
+                        description = "Your next adventure starts here! " +
                                 "Choose your destinations, organize your plans, and make every trip unforgettable "
                     }
                 }
@@ -83,74 +87,121 @@ fun SplashScreenUI(
 
 
                 Column(
-                    modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 20.dp),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.height(40.dp))
-                    Text(text = text, fontSize = 35.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.SansSerif, modifier = Modifier.padding(bottom = 15.dp, top = 35.dp) )
-                    Image(painter = painterResource(id=resource), contentDescription = "OnBoarding Screens",
-                        contentScale =  ContentScale.Crop,modifier=Modifier.fillMaxWidth().height(410.dp).clip(RoundedCornerShape(16.dp))
+                    Text(
+                        text = text,
+                        fontSize = 35.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = NavyBlue,
+                        modifier = Modifier.padding(bottom = 15.dp, top = 35.dp)
+                    )
+                    Image(
+                        painter = painterResource(id = resource),
+                        contentDescription = "OnBoarding Screens",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(410.dp)
+                            .clip(RoundedCornerShape(16.dp))
 
                     )
-                    Spacer(modifier=Modifier.height(10.dp))
-                    Box(modifier = Modifier.fillMaxWidth().padding(bottom=2.dp).height(150.dp).verticalScroll(
-                        rememberScrollState()
-                    ), contentAlignment = Alignment.TopCenter){Text(text = description, fontSize = 15.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Serif, lineHeight = 20.sp )}
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 2.dp)
+                            .height(180.dp)
+                            .verticalScroll(
+                                rememberScrollState()
+                            ), contentAlignment = Alignment.TopCenter
+                    ) {
+                        Text(
+                            text = description,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = NavyBlue,
+                            lineHeight = 20.sp
+                        )
+                    }
                     Spacer(modifier = Modifier.height(30.dp))
 
 
-
-
-
                 }
             }
         }
 
-            Row(modifier=Modifier.fillMaxWidth().align(Alignment.BottomCenter).padding(horizontal = 20.dp, vertical = 120.dp), horizontalArrangement = Arrangement.End) {
-                AnimatedVisibility(
-                    visible = (pagerState.currentPage == 2),
-                    enter = fadeIn(),
-                    exit = fadeOut()
-                ) {
-                    Button(onClick = {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(horizontal = 20.dp, vertical = 120.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            AnimatedVisibility(
+                visible = (pagerState.currentPage == 2),
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                Button(
+                    onClick = {
                         onNavigateToLogin()
                     },
-
-
-                        modifier = Modifier.width(80.dp).height(40.dp)) {
-                        Text(
-                            "Next",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-
-
-                        )
-                    }
+                    modifier = Modifier
+                        .width(80.dp)
+                        .height(40.dp)
+                ) {
+                    Text(
+                        "Next",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
                 }
             }
-            Row(modifier=Modifier.align(Alignment.BottomCenter) .padding(bottom=80.dp), horizontalArrangement = Arrangement.Center){
-                repeat(3) {
-                    CustomIndicator(isSelected = pagerState.currentPage == it)
-                    Spacer(modifier=Modifier.size(2.5.dp))
+        }
+        Row(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 80.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            repeat(3) {
+                CustomIndicator(isSelected = pagerState.currentPage == it)
+                Spacer(modifier = Modifier.size(2.5.dp))
 
-                }
             }
         }
     }
+}
 
 
 @Composable
 fun CustomIndicator(isSelected: Boolean) {
 
-    Box(modifier = Modifier.height(10.dp).width(width= if(isSelected)20.dp else 15.dp).clip(RoundedCornerShape(10.dp)).background(color=if(isSelected) Color(0xFF002B5B
-
-    ) else Color.LightGray))
-    Spacer(modifier=Modifier.size(4.dp).padding(bottom = 100.dp,top=100.dp))
+    Box(
+        modifier = Modifier
+            .height(10.dp)
+            .width(width = if (isSelected) 20.dp else 15.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .background(
+                color = if (isSelected) NavyBlue else Color.LightGray
+            )
+    )
+    Spacer(
+        modifier = Modifier
+            .size(4.dp)
+            .padding(bottom = 100.dp, top = 100.dp)
+    )
 }
+
 @Preview(showBackground = true)
 @Composable
-fun onBoardingScreenPreview(){
+fun onBoardingScreenPreview() {
     SplashScreenUI()
 }
 
