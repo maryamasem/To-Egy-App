@@ -6,29 +6,10 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextFieldDefaults.contentPadding
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -49,87 +30,101 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.depi.toegy.R
 import com.depi.toegy.ui.theme.BackgroundWhite
-import com.depi.toegy.ui.theme.Grey
 import com.depi.toegy.ui.theme.NavyBlue
 import com.depi.toegy.ui.theme.Yellow
 
 @Composable
 fun Home(navController: NavController) {
-   // val vm = rememberSaveable { TourismViewModel() }
 
-    Column (
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(contentPadding())
-            .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState()),
+            .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+        item {
+            EgyptIcon(Modifier)
+        }
 
-        EgyptIcon(Modifier)
+        item {
+            MuseumOpeningBannerAnimated {}
+            Spacer(Modifier.height(24.dp))
+        }
 
-        MuseumOpeningBannerAnimated {}
-
-        Spacer(Modifier.height(24.dp))
-
-        Text(
-            text = "Popular attraction",
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
-            color = NavyBlue,
-            modifier = Modifier.align(Alignment.Start)
-
-        )
-
-        Spacer(Modifier.height(8.dp))
-
-        Card(
-            onClick = {},
-            shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(4.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Box {
-                Image(
-                    painter = painterResource(id = R.drawable.egy_museum),
-                    contentDescription = "Egyptian Museum",
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .height(220.dp)
-
+        // ---------- Popular Attraction ----------
+        item {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Text(
+                    text = "Popular attraction",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    color = NavyBlue
                 )
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .fillMaxWidth()
-                        .background(NavyBlue)
-                        .padding(12.dp)
-                ) {
-                    Text(
-                        text = "Egyptian Museum",
-                        color = BackgroundWhite,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
+            }
+        }
+
+        item {
+            Spacer(Modifier.height(8.dp))
+
+            Card(
+                onClick = {},
+                shape = RoundedCornerShape(16.dp),
+                elevation = CardDefaults.cardElevation(4.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Box {
+                    Image(
+                        painter = painterResource(id = R.drawable.egy_museum),
+                        contentDescription = "Egyptian Museum",
+                        contentScale = ContentScale.FillBounds,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(220.dp)
                     )
+
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .fillMaxWidth()
+                            .background(NavyBlue)
+                            .padding(12.dp)
+                    ) {
+                        Text(
+                            text = "Egyptian Museum",
+                            color = BackgroundWhite,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 }
             }
         }
 
-        Spacer(Modifier.height(24.dp))
+        item { Spacer(Modifier.height(24.dp)) }
 
-        Text(
-            text = "Categories",
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
-            color = NavyBlue,
-            modifier = Modifier.align(Alignment.Start)
-        )
+        // ---------- Categories Title ----------
+        item {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Text(
+                    text = "Categories",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    color = NavyBlue
+                )
+            }
+        }
 
-        Spacer(Modifier.height(8.dp))
+        item { Spacer(Modifier.height(8.dp)) }
 
-        Column {
+        // ---------- Categories Rows ----------
+        item {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxWidth()
@@ -143,10 +138,12 @@ fun Home(navController: NavController) {
                 CategoryItem(R.drawable.resturant_ic, "Restaurant") {
                     navController.navigate("ListScreen/restaurants")
                 }
-
             }
-            Spacer(Modifier.height(8.dp))
+        }
 
+        item { Spacer(Modifier.height(8.dp)) }
+
+        item {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxWidth()
@@ -161,8 +158,6 @@ fun Home(navController: NavController) {
                     navController.navigate("ListScreen/airports")
                 }
             }
-
-
         }
     }
 }
