@@ -1,50 +1,43 @@
 package com.depi.toegy.screens
 
-import ads_mobile_sdk.h6
-import androidx.compose.foundation.Image
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Place
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
-import com.depi.toegy.R
 import com.depi.toegy.model.Place
 import com.depi.toegy.ui.theme.*
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun TravelDetailScreenPreview(modifier: Modifier = Modifier) {
-  //  TravelDetailScreen()
+    // TravelDetailScreen()
 }
 
 @Composable
-fun TravelDetailScreen(place : Place) {
+fun TravelDetailScreen(place: Place) {
     val navy = Navy
     val accentYellow = AccentYellow
     val lightGrayText = SubtleGray
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -57,8 +50,8 @@ fun TravelDetailScreen(place : Place) {
                 .fillMaxWidth()
         ) {
             SubcomposeAsyncImage(
-                model = place.img, //  Replace with your image URL
-                contentDescription = "Giza",
+                model = place.img,
+                contentDescription = place.name,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
                 loading = {
@@ -70,16 +63,9 @@ fun TravelDetailScreen(place : Place) {
                     }
                 },
                 error = {
-                    // optional error placeholder
                     SubcomposeAsyncImageContent()
                 }
             )
-//            Image(
-//                painter = painterResource(id = R.drawable.giza),
-//                contentDescription = "Giza",
-//                contentScale = ContentScale.Crop,
-//                modifier = Modifier.fillMaxSize()
-//            )
         }
 
         Column(
@@ -105,7 +91,30 @@ fun TravelDetailScreen(place : Place) {
                         color = lightGrayText
                     )
                 }
-                FavoriteToggle(iconSize = 26.dp, navy = navy)
+
+
+                FavoriteToggle(
+                    iconSize = 26.dp,
+                    navy = navy,
+                    onMapClick = {
+                        val lat = place.lat
+                        val lng = place.long
+
+
+                        val geoUri = Uri.parse("geo:$lat,$lng?q=$lat,$lng(${Uri.encode(place.name)})")
+
+                        val mapIntent = Intent(Intent.ACTION_VIEW, geoUri).apply {
+                            `package` = "com.google.android.apps.maps"
+                        }
+
+                        try {
+                            context.startActivity(mapIntent)
+                        } catch (e: ActivityNotFoundException) {
+                            val fallbackIntent = Intent(Intent.ACTION_VIEW, geoUri)
+                            context.startActivity(fallbackIntent)
+                        }
+                    }
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -113,7 +122,7 @@ fun TravelDetailScreen(place : Place) {
             Text(text = "Description", fontSize = 16.sp, color = navy)
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = place.desc ,
+                text = place.desc,
                 fontSize = 13.sp,
                 color = BodyGray,
                 lineHeight = 18.sp
@@ -130,9 +139,9 @@ fun TravelDetailScreen(place : Place) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp)
-                        .shadow(elevation = 6.dp, shape = RoundedCornerShape(12.dp)),
+                        .shadow(6.dp, RoundedCornerShape(12.dp)),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor  = navy)
+                    colors = ButtonDefaults.buttonColors(containerColor = navy)
                 ) {
                     Text(text = "Add to Itinerary", color = Color.White, fontSize = 16.sp)
                 }
@@ -144,9 +153,9 @@ fun TravelDetailScreen(place : Place) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp)
-                        .shadow(elevation = 4.dp, shape = RoundedCornerShape(12.dp)),
+                        .shadow(4.dp, RoundedCornerShape(12.dp)),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor  = accentYellow)
+                    colors = ButtonDefaults.buttonColors(containerColor = accentYellow)
                 ) {
                     Text(text = "Book Tour/Hotel", color = NavyDark, fontSize = 16.sp)
                 }
@@ -159,20 +168,19 @@ fun TravelDetailScreen(place : Place) {
 }
 
 @Composable
-fun FavoriteToggle(iconSize: Dp, navy: Color) {
-    var liked by remember { mutableStateOf(false) }
-
+fun FavoriteToggle(iconSize: Dp, navy: Color, onMapClick: () -> Unit) {
     IconButton(
-        onClick = { liked = !liked },
+        onClick = onMapClick,
         modifier = Modifier
             .size(44.dp)
-            .background(CardWhite, shape = RoundedCornerShape(10.dp))
-            .border(1.dp, Color(0xFFEDEFF2), shape = RoundedCornerShape(10.dp))
+            .background(CardWhite, RoundedCornerShape(10.dp))
+            .border(1.dp, Color(0xFFEDEFF2), RoundedCornerShape(10.dp))
     ) {
-        if (liked) {
-            Icon(Icons.Filled.Favorite, contentDescription = "liked", tint = Color.Red, modifier = Modifier.size(iconSize))
-        } else {
-            Icon(Icons.Outlined.FavoriteBorder, contentDescription = "not liked", tint = navy, modifier = Modifier.size(iconSize))
-        }
+        Icon(
+            imageVector = Icons.Filled.Place,
+            contentDescription = "Open Map",
+            tint = navy,
+            modifier = Modifier.size(iconSize)
+        )
     }
 }
