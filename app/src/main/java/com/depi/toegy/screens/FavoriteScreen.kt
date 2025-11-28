@@ -1,6 +1,7 @@
 package com.depi.toegy.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,15 +35,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.depi.toegy.model.FavoritePlace
+import com.depi.toegy.model.toPlace
 import com.depi.toegy.ui.theme.BackgroundWhite
 import com.depi.toegy.ui.theme.NavyBlue
 import com.depi.toegy.ui.theme.TextBlack
 import com.depi.toegy.viewModel.FavoritesViewModel
 
 @Composable
-fun FavoriteScreen(viewModel: FavoritesViewModel = viewModel()) {
+fun FavoriteScreen(
+    viewModel: FavoritesViewModel = viewModel(),
+    navController: NavController
+) {
+
     val favorites by viewModel.favoritesState.collectAsState()
     val isLoading by viewModel.loadingState.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
@@ -113,7 +120,9 @@ fun FavoriteScreen(viewModel: FavoritesViewModel = viewModel()) {
                                     viewModel.removeFavorite(place.id)
                                 }
                             }
-                        )
+                        ){
+                            navController.navigate(place.toPlace())
+                        }
                     }
                 }
             }
@@ -124,13 +133,16 @@ fun FavoriteScreen(viewModel: FavoritesViewModel = viewModel()) {
 @Composable
 private fun FavoriteCard(
     place: FavoritePlace,
-    onRemove: () -> Unit
+    onRemove: () -> Unit,
+    onClick: () -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(6.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
     ) {
         Column {
             Box {

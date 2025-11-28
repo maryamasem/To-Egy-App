@@ -92,8 +92,7 @@ fun TravelDetailScreen(place: Place) {
                     )
                 }
 
-
-                FavoriteToggle(
+                MapToggle(
                     iconSize = 26.dp,
                     navy = navy,
                     onMapClick = {
@@ -102,7 +101,6 @@ fun TravelDetailScreen(place: Place) {
 
 
                         val geoUri = Uri.parse("geo:$lat,$lng?q=$lat,$lng(${Uri.encode(place.name)})")
-
                         val mapIntent = Intent(Intent.ACTION_VIEW, geoUri).apply {
                             `package` = "com.google.android.apps.maps"
                         }
@@ -168,7 +166,7 @@ fun TravelDetailScreen(place: Place) {
 }
 
 @Composable
-fun FavoriteToggle(iconSize: Dp, navy: Color, onMapClick: () -> Unit) {
+fun MapToggle(iconSize: Dp, navy: Color, onMapClick: () -> Unit) {
     IconButton(
         onClick = onMapClick,
         modifier = Modifier

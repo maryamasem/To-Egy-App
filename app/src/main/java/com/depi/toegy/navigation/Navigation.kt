@@ -92,9 +92,6 @@ fun AppNavigation(
             _root_ide_package_.com.depi.toegy.screens.MainScreen()
         }
 
-
-
-
     }
 }
 

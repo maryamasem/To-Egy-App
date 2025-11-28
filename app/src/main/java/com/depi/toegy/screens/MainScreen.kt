@@ -81,7 +81,7 @@ fun AppNavHost(
                 when (destination) {
                     Destination.Home -> Home(navController)
                     Destination.Profile -> ProfileScreen()
-                    Destination.Favorites -> FavoriteScreen(viewModel = favoritesViewModel)
+                    Destination.Favorites -> FavoriteScreen(viewModel = favoritesViewModel,navController)
                 }
             }
         }
