@@ -11,6 +11,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.depi.toegy.model.Place
+import com.depi.toegy.screens.TravelDetailScreen
 import com.google.firebase.auth.FirebaseAuth
 
 sealed class Screen(val route: String) {
@@ -88,6 +91,10 @@ fun AppNavigation(
         composable(Screen.Main.route) {
             _root_ide_package_.com.depi.toegy.screens.MainScreen()
         }
+
+
+
+
     }
 }
 

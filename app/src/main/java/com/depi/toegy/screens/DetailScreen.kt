@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,17 +28,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import com.depi.toegy.R
+import com.depi.toegy.model.Place
 import com.depi.toegy.ui.theme.*
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun TravelDetailScreenPreview(modifier: Modifier = Modifier) {
-    TravelDetailScreen()
+  //  TravelDetailScreen()
 }
 
 @Composable
-fun TravelDetailScreen() {
+fun TravelDetailScreen(place : Place) {
     val navy = Navy
     val accentYellow = AccentYellow
     val lightGrayText = SubtleGray
@@ -52,12 +56,30 @@ fun TravelDetailScreen() {
                 .height(210.dp)
                 .fillMaxWidth()
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.giza),
+            SubcomposeAsyncImage(
+                model = place.img, //  Replace with your image URL
                 contentDescription = "Giza",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                loading = {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                },
+                error = {
+                    // optional error placeholder
+                    SubcomposeAsyncImageContent()
+                }
             )
+//            Image(
+//                painter = painterResource(id = R.drawable.giza),
+//                contentDescription = "Giza",
+//                contentScale = ContentScale.Crop,
+//                modifier = Modifier.fillMaxSize()
+//            )
         }
 
         Column(
@@ -71,14 +93,14 @@ fun TravelDetailScreen() {
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Giza Pyramids",
+                        text = place.name,
                         fontSize = 22.sp,
                         color = navy,
                         style = MaterialTheme.typography.bodySmall
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
-                        text = "Giza Plateau, Egypt",
+                        text = place.location,
                         fontSize = 14.sp,
                         color = lightGrayText
                     )
@@ -91,7 +113,7 @@ fun TravelDetailScreen() {
             Text(text = "Description", fontSize = 16.sp, color = navy)
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "The Giza Pyramid Complex, known as the Giza Necropolis, is home to the Great Pyramid and other ancient structures built over 4,500 years ago.",
+                text = place.desc ,
                 fontSize = 13.sp,
                 color = BodyGray,
                 lineHeight = 18.sp

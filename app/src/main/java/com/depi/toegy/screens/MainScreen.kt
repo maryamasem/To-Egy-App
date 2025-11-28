@@ -28,6 +28,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.depi.toegy.model.Place
 import com.depi.toegy.viewModel.FavoritesViewModel
 import com.depi.toegy.ui.theme.Grey
 import com.depi.toegy.ui.theme.NavyBlue
@@ -88,6 +90,12 @@ fun AppNavHost(
             val category = it.arguments?.getString("category") ?: ""
             PlacesListScreen(navController,category)
         }
+
+        composable <Place>{
+            val place: Place = it.toRoute()
+            TravelDetailScreen(place)
+        }
+
     }
 
 

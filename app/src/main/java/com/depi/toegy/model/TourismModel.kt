@@ -1,5 +1,8 @@
 package com.depi.toegy.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Place(
     val id: String = "",
     val name: String ="",

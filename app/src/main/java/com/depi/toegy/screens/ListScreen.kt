@@ -146,7 +146,9 @@ fun PlacesListScreen(
                     PlaceCard(
                         place = place,
                         favoritesViewModel = favoritesViewModel
-                    )
+                    ){
+                        navController.navigate(place)
+                    }
                 }
             }
         }
@@ -154,7 +156,11 @@ fun PlacesListScreen(
 }
 
 @Composable
-fun PlaceCard(place: Place, favoritesViewModel: FavoritesViewModel) {
+fun PlaceCard(
+    place: Place,
+    favoritesViewModel: FavoritesViewModel,
+    onclick :()->Unit
+) {
     val context = LocalContext.current
     val favorites by favoritesViewModel.favoritesState.collectAsState()
     val resolvedId = place.id.ifBlank { place.name }
@@ -166,7 +172,7 @@ fun PlaceCard(place: Place, favoritesViewModel: FavoritesViewModel) {
         modifier = Modifier
             .fillMaxWidth()
             .background(BackgroundWhite)
-            .clickable { },
+            .clickable { onclick() },
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Row(
