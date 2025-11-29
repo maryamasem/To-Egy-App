@@ -29,6 +29,7 @@ import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.depi.toegy.R
+import com.depi.toegy.model.Place
 import com.depi.toegy.ui.theme.BackgroundWhite
 import com.depi.toegy.ui.theme.NavyBlue
 import com.depi.toegy.ui.theme.Yellow
@@ -69,7 +70,17 @@ fun Home(navController: NavController) {
 
         item {
             Card(
-                onClick = {},
+                onClick = {
+                    navController.navigate(Place(
+                        name= "Grand Egyptian Museum (GEM)",
+                        lat = 29.9950,
+                        long =  31.1193,
+                        desc = "The Grand Egyptian Museum (GEM) in Giza, Egypt, is the largest museum globally dedicated entirely to ancient Egyptian civilization. It houses over 100,000 artifacts, including the full treasure collection of King Tutankhamun displayed together for the first time.",
+                        location =  "Cairo - Alexandria Desert Road, Al Remayah Square, Kafr Nassar, Al Haram, Giza Governorate, Egypt.",
+                        img =  "https://i.pinimg.com/736x/fd/91/62/fd91623912310ff1218c81b097627324.jpg",
+                        url = "https://gem.eg/"
+                    ))
+                },
                 shape = RoundedCornerShape(16.dp),
                 elevation = CardDefaults.cardElevation(4.dp),
                 modifier = Modifier.fillMaxWidth()
@@ -117,7 +128,7 @@ fun Home(navController: NavController) {
 
         item {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.SpaceAround,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 CategoryItem(img1, "Museums") { navController.navigate("ListScreen/museums") }
@@ -130,7 +141,7 @@ fun Home(navController: NavController) {
 
         item {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.SpaceAround,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 CategoryItem(img4, "Hotels") { navController.navigate("ListScreen/hotels") }

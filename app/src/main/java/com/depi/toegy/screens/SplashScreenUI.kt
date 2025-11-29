@@ -90,14 +90,15 @@ fun SplashScreenUI(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 20.dp),
-                    verticalArrangement = Arrangement.Top,
+                    verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.height(40.dp))
                     Text(
                         text = text,
-                        fontSize = 35.sp,
+                        fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Serif,
                         color = NavyBlue,
                         modifier = Modifier.padding(bottom = 15.dp, top = 35.dp)
                     )
@@ -107,7 +108,7 @@ fun SplashScreenUI(
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(410.dp)
+                            .height(300.dp)
                             .clip(RoundedCornerShape(16.dp))
 
                     )
