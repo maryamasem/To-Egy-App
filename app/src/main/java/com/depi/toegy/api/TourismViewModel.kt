@@ -22,7 +22,6 @@ class TourismViewModel : ViewModel() {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         apiService = retrofit.create(TourismApiService::class.java)
-      //  getPlaces()
     }
 
     fun getPlaces(category: String){
@@ -30,7 +29,10 @@ class TourismViewModel : ViewModel() {
             try {
                 isLoading = true
               //  Log.d("trace", "Step 1: entered try")
-                state =  getPlacesFromRemote(category)
+                val placesFromRemote = getPlacesFromRemote(category)
+                state = placesFromRemote.mapIndexed { index, place ->
+                    place.copy(id = "$category-$index")
+                }
              //   Log.d("trace", "Step 2: finished getPlacesFromRemote")
             } catch (e: Exception) {
              //   Log.e("trace", "Step 3: entered catch with error: ${e.message}", e)
@@ -40,6 +42,10 @@ class TourismViewModel : ViewModel() {
             }
         }
     }
+
+
     private suspend fun getPlacesFromRemote(category: String) =
         withContext(Dispatchers.IO){ apiService.getPlaces(category)}
+
+
 }

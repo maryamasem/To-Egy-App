@@ -1,5 +1,7 @@
 package com.depi.toegy.viewModel
 
+import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
@@ -7,7 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class SignupViewModel: ViewModel() {
+class SignupViewModel(): ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
 
@@ -17,8 +19,7 @@ class SignupViewModel: ViewModel() {
         email: String,
         password: String,
         onSuccess: () -> Unit,
-        onFailure: (String) -> Unit
-    ) {
+        onFailure: (String) -> Unit) {
         viewModelScope.launch {
 
             try {
@@ -45,7 +46,5 @@ class SignupViewModel: ViewModel() {
             }
         }
     }
-
-
-
+    
 }
