@@ -70,7 +70,6 @@ fun PlacesListScreen(
     category:String,
     modifier: Modifier = Modifier
 ) {
-
     Log.d("cat", "PlacesListScreen: $category")
     val vm: TourismViewModel = viewModel()
 
@@ -165,6 +164,7 @@ fun PlaceCard(
     val favorites by favoritesViewModel.favoritesState.collectAsState()
     val resolvedId = place.id.ifBlank { place.name }
     val isFavorite = favorites.any { it.id == resolvedId }
+    Log.e("TEST_ID", "Airport ID = '${place.id}'")
 
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -226,7 +226,7 @@ fun PlaceCard(
                 Text(
                     text = place.name,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF0D1B2A)
+                    color = NavyDark
                 )
                 Text(
                     text = place.location,

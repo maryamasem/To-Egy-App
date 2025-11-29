@@ -1,5 +1,6 @@
 package com.depi.toegy.viewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.depi.toegy.model.FavoritePlace
@@ -26,6 +27,18 @@ class FavoritesViewModel(
     val loadingState: StateFlow<Boolean> = _loadingState.asStateFlow()
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
+    fun sanitizedId(text: String): String {
+        return text
+            .replace(" ", "")
+            .replace(".", "_")
+            .replace("/", "_")
+            .replace("(", "")
+            .replace(")", "")
+            .replace("-", "_")
+            .replace(",", "_")
+            .replace("__", "_")
+    }
 
     init {
         auth.addAuthStateListener(authListener)
@@ -59,18 +72,18 @@ class FavoritesViewModel(
         }
     }
 
-    fun addFavorite(place: FavoritePlace) {
-        val uid = auth.currentUser?.uid ?: run {
-            _errorMessage.value = "User not authenticated."
-            return
-        }
-        viewModelScope.launch {
-            when (val result = repository.addToFavorites(uid, place)) {
-                is FavoriteResult.Error -> _errorMessage.value = result.message
-                else -> Unit
-            }
-        }
-    }
+    /* fun addFavorite(place: FavoritePlace) {
+         val uid = auth.currentUser?.uid ?: run {
+             _errorMessage.value = "User not authenticated."
+             return
+         }
+         viewModelScope.launch {
+             when (val result = repository.addToFavorites(uid, place)) {
+                 is FavoriteResult.Error -> _errorMessage.value = result.message
+                 else -> Unit
+             }
+         }
+     }*/
 
     fun removeFavorite(placeId: String) {
         val uid = auth.currentUser?.uid ?: run {
@@ -90,24 +103,41 @@ class FavoritesViewModel(
             _errorMessage.value = "User not authenticated."
             return
         }
-        val docId = place.id.ifBlank { place.name }
-        val isFavorite = _favoritesState.value.any { it.id == docId }
+
+        // Log original place data
+        Log.e(
+            "FavoriteDebug",
+            "Original place data: Name='${place.name}', Lat='${place.lat}', Long='${place.long}', ID='${place.id}'"
+        )
+
+        // Generate stable unique ID safely
+        val generatedId = place.id.ifBlank {
+            val namePart = place.name.takeIf { it.isNotBlank() } ?: "unknown_name"
+            val latPart = place.lat?.toString() ?: "0.0"
+            val longPart = place.long?.toString() ?: "0.0"
+            sanitizedId("${namePart}_${latPart}_${longPart}")
+        }
+
+        Log.e("FavoriteDebug", "Generated ID = '$generatedId'")
+
+        val fixedPlace = place.copy(id = generatedId)
+
+        val isFavorite = _favoritesState.value.any { it.id == generatedId }
 
         viewModelScope.launch {
             val result = if (isFavorite) {
-                repository.removeFavorite(uid, docId)
+                repository.removeFavorite(uid, generatedId)
             } else {
-                repository.addToFavorites(uid, place.copy(id = docId))
+                repository.addToFavorites(uid, fixedPlace)
             }
+
             if (result is FavoriteResult.Error) {
                 _errorMessage.value = result.message
+                Log.e("FavoriteDebug", "Error: ${result.message}")
             }
         }
     }
 
-    fun refreshFavorites() {
-        observeFavorites()
-    }
 
     override fun onCleared() {
         super.onCleared()
@@ -115,3 +145,4 @@ class FavoritesViewModel(
         auth.removeAuthStateListener(authListener)
     }
 }
+
