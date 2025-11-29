@@ -15,4 +15,15 @@ data class FavoritePlace(
     val img: String = "",
     val url: String? = null
 )
-
+fun FavoritePlace.toPlace(): Place {
+    return Place(
+        id = this.id,
+        name = this.name,
+        lat = this.lat,
+        long = this.long,
+        desc = this.desc,
+        location = this.location,
+        img = this.img,
+        url = this.url
+    )
+}
