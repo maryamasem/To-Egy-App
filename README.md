@@ -98,7 +98,7 @@ Below are some screenshots from the ToEgy App:
 <p align="center">
   <img src="screenshots/Categories.jpg" width="150" />
   <img src="screenshots/list.jpg" width="150" />
-  <img src="screenshots/detail.jpg" width="150" />
+  <img src="screenshots/details.jpg" width="150" />
   <img src="screenshots/favorites.jpg" width="150" />
   <img src="screenshots/profile.jpg" width="150" />
 
