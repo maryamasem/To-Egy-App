@@ -9,12 +9,13 @@ The app is built with **Jetpack Compose**, **MVVM architecture**, **Firebase**, 
 - Browse categorized tourism content (hotels, museums, beaches, temples, airports, etc.)
 - Save and manage favorite places
 - Open any place location directly in Google Maps
+- Review the places
 - Secure user authentication (Login, Signup, Forgot Password)
 - Smooth UI using Jetpack Compose + Material 3
 - Shimmer loading animation
 - Clean and scalable MVVM architecture
 - Navigation flow using Navigation Compose
-- Firebase Realtime Database integration
+- Firebase Database integration
 
 ---
 
