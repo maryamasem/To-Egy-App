@@ -347,7 +347,7 @@ fun TravelDetailScreen(place: Place) {
                         Icon(
                             imageVector = if (isSelected)
                                 Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                            contentDescription = null,
+                            contentDescription = "star_$i",
                             tint = if (isSelected) Yellow else navy,
                             modifier = Modifier
                                 .size(38.dp)

@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -143,6 +144,7 @@ private fun FavoriteCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
+            .testTag("favorite_card_${place.id}")
     ) {
         Column {
             Box {
@@ -163,6 +165,7 @@ private fun FavoriteCard(
                         .padding(8.dp)
                         .clip(CircleShape)
                         .background(Color.White.copy(alpha = 0.7f))
+                        .testTag("remove_button_${place.id}")
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Delete,
