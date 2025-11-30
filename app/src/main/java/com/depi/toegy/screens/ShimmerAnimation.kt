@@ -64,7 +64,7 @@ fun ShimmerGridItem( brush: Brush) {
         ) {
             Box(
                 modifier = Modifier
-                    .size(60.dp)
+                    .size(100.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(brush)
             )
@@ -75,7 +75,7 @@ fun ShimmerGridItem( brush: Brush) {
                 Box(
                     modifier = Modifier
                         .height(16.dp)
-                        .fillMaxWidth(0.6f)
+                        .fillMaxWidth(0.8f)
                         .clip(RoundedCornerShape(4.dp))
                         .background(brush)
                 )
@@ -85,7 +85,7 @@ fun ShimmerGridItem( brush: Brush) {
                 Box(
                     modifier = Modifier
                         .height(14.dp)
-                        .fillMaxWidth(0.4f)
+                        .fillMaxWidth(0.6f)
                         .clip(RoundedCornerShape(4.dp))
                         .background(brush)
                 )
