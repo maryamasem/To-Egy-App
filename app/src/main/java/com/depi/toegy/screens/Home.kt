@@ -9,6 +9,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -37,26 +39,25 @@ import com.depi.toegy.ui.theme.Yellow
 @Composable
 fun Home(navController: NavController) {
 
-    // تحميل الصور مرة واحدة
     val imgMuseum = painterResource(R.drawable.egy_museum)
-    val img1 = painterResource(R.drawable.museum_ic)
-    val img2 = painterResource(R.drawable.beachs_ic)
-    val img3 = painterResource(R.drawable.resturant_ic)
-    val img4 = painterResource(R.drawable.hotel_ic)
-    val img5 = painterResource(R.drawable.history_ic)
-    val img6 = painterResource(R.drawable.airport_ic)
+    val img1 =  painterResource(R.drawable.museum_ic)
+    val img2 =  painterResource(R.drawable.beachs_ic)
+    val img3 =  painterResource(R.drawable.resturant_ic)
+    val img4 =  painterResource(R.drawable.hotel_ic)
+    val img5 =  painterResource(R.drawable.history_ic)
+    val img6 =  painterResource(R.drawable.airport_ic)
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp) // Scroll أسرع
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
         item { EgyptIcon(Modifier) }
 
-        item { MuseumOpeningBannerAnimated {} } // animation زي ما كان
+        item { MuseumOpeningBannerAnimated {} }
 
         item {
             Text(
@@ -88,8 +89,8 @@ fun Home(navController: NavController) {
                 Box {
                     Image(
                         painter = imgMuseum,
-                        contentDescription = "Egyptian Museum",
-                        contentScale = ContentScale.FillBounds, // animation زي ما كان
+                        contentDescription = "The Grand Egyptian Museum",
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(220.dp)
@@ -115,7 +116,6 @@ fun Home(navController: NavController) {
 
         item { Spacer(Modifier.height(24.dp)) }
 
-        // ---------- Categories Title ----------
         item {
             Text(
                 text = "Categories",
@@ -127,31 +127,25 @@ fun Home(navController: NavController) {
         }
 
         item {
-            Row(
-                horizontalArrangement = Arrangement.SpaceAround,
-                modifier = Modifier.fillMaxWidth()
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(260.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                CategoryItem(img1, "Museums") { navController.navigate("ListScreen/museums") }
-                CategoryItem(img2, "Beaches") { navController.navigate("ListScreen/beaches") }
-                CategoryItem(img3, "Restaurant") { navController.navigate("ListScreen/restaurants") }
+                item { CategoryItem(img1, "Museums") { navController.navigate("ListScreen/museums") } }
+                item { CategoryItem(img2, "Beaches") { navController.navigate("ListScreen/beaches") } }
+                item { CategoryItem(img3, "Restaurant") { navController.navigate("ListScreen/restaurants") } }
+                item { CategoryItem(img4, "Hotels") { navController.navigate("ListScreen/hotels") } }
+                item { CategoryItem(img5, "History") { navController.navigate("ListScreen/history") } }
+                item { CategoryItem(img6, "Airports") { navController.navigate("ListScreen/airports") } }
             }
         }
 
-        item { Spacer(Modifier.height(8.dp)) }
-
-        item {
-            Row(
-                horizontalArrangement = Arrangement.SpaceAround,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                CategoryItem(img4, "Hotels") { navController.navigate("ListScreen/hotels") }
-                CategoryItem(img5, "History") { navController.navigate("ListScreen/history") }
-                CategoryItem(img6, "Airports") { navController.navigate("ListScreen/airports") }
-            }
-        }
     }
 }
-
 @Composable
 fun CategoryItem(icon: Painter, label: String, onClick: () -> Unit) {
 
@@ -182,7 +176,6 @@ fun MuseumOpeningBannerAnimated(onClick: () -> Unit) {
 
     val alphaAnim = remember { Animatable(0f) }
 
-    // Animation زي ما كان
     LaunchedEffect(Unit) {
         alphaAnim.animateTo(
             targetValue = 1f,
