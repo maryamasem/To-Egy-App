@@ -104,7 +104,7 @@ fun Home(navController: NavController) {
                             .padding(12.dp)
                     ) {
                         Text(
-                            text = "Egyptian Museum",
+                            text = "The Grand Egyptian Museum",
                             color = BackgroundWhite,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium
