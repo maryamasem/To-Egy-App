@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.depi.toegy.Utils.Constants
 import com.depi.toegy.model.Place
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,7 +19,7 @@ class TourismViewModel : ViewModel() {
     val apiService : TourismApiService
 
     init {
-        val retrofit = Retrofit.Builder().baseUrl("https://news-app-c61b1-default-rtdb.firebaseio.com/")
+        val retrofit = Retrofit.Builder().baseUrl(Constants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         apiService = retrofit.create(TourismApiService::class.java)
@@ -43,9 +44,7 @@ class TourismViewModel : ViewModel() {
         }
     }
 
-
-    private suspend fun getPlacesFromRemote(category: String) =
-        withContext(Dispatchers.IO){ apiService.getPlaces(category)}
+    private suspend fun getPlacesFromRemote(category: String) = withContext(Dispatchers.IO){ apiService.getPlaces(category)}
 
 
 }

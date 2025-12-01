@@ -73,6 +73,7 @@ fun Home(navController: NavController) {
             Card(
                 onClick = {
                     navController.navigate(Place(
+                        id = "museums-0",
                         name= "Grand Egyptian Museum (GEM)",
                         lat = 29.9950,
                         long =  31.1193,

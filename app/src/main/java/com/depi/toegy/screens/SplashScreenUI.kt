@@ -70,19 +70,19 @@ fun SplashScreenUI(
                 Spacer(modifier = Modifier.height(40.dp))
                 Text(
                     text = text,
-                    fontSize = 32.sp,
+                    fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Serif,
                     color = NavyBlue,
                     modifier = Modifier.padding(bottom = 15.dp, top = 35.dp)
                 )
                 Image(
-                    painter = painterResource(id = resource),
+                    painter = painterResource(id=resource),
                     contentDescription = "OnBoarding Screens",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
+                    contentScale =  ContentScale.Crop,
+                    modifier=Modifier
                         .fillMaxWidth()
-                        .height(300.dp)
+                        .height(410.dp)
                         .clip(RoundedCornerShape(16.dp))
                 )
                 Spacer(modifier = Modifier.height(10.dp))

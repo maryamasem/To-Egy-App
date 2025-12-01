@@ -50,7 +50,6 @@ fun FavoriteScreen(
     viewModel: FavoritesViewModel = viewModel(),
     navController: NavController
 ) {
-
     val favorites by viewModel.favoritesState.collectAsState()
     val isLoading by viewModel.loadingState.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()

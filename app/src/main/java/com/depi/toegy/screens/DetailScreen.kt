@@ -2,6 +2,7 @@ package com.depi.toegy.screens
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.graphics.fonts.Font
 import android.net.Uri
 import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
@@ -17,7 +18,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,6 +36,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -74,9 +78,7 @@ fun getname() : String{
                     .get()
                     .await()
 
-                userName = userDoc.getString("name")
-                    ?: currentUser.email?.substringBefore("@")
-                            ?: "Guest"
+                userName = userDoc.getString("name") ?: currentUser.email?.substringBefore("@") ?: "Guest"
             } catch (e: Exception) {
                 // Fallback to email if name not found or error occurs
                 userName = currentUser.email?.substringBefore("@") ?: "Guest"
@@ -195,7 +197,7 @@ fun TravelDetailScreen(place: Place) {
                         val geoUri =
                             Uri.parse("geo:$lat,$lng?q=$lat,$lng(${Uri.encode(place.name)})")
                         val mapIntent = Intent(Intent.ACTION_VIEW, geoUri).apply {
-//                            `package` = "com.google.android.apps.maps"
+                                `package` = "com.google.android.apps.maps"
                         }
                         try {
                             context.startActivity(mapIntent)
@@ -208,7 +210,6 @@ fun TravelDetailScreen(place: Place) {
             }
 
             Spacer(modifier = Modifier.height(20.dp))
-
 
             Text(
                 text = "Description",
@@ -252,7 +253,7 @@ fun TravelDetailScreen(place: Place) {
                         text = "View Website/Info",
                         color = Color.White,
                         fontSize = 16.sp,
-                        fontWeight = androidx.compose.ui.text.font.FontWeight.Medium
+                        fontWeight =FontWeight.Medium
                     )
                 }
 
@@ -276,7 +277,7 @@ fun TravelDetailScreen(place: Place) {
                         text = "Rate Place",
                         color = NavyDark,
                         fontSize = 16.sp,
-                        fontWeight = androidx.compose.ui.text.font.FontWeight.Medium
+                        fontWeight = FontWeight.Medium
                     )
                 }
             }
@@ -346,7 +347,7 @@ fun TravelDetailScreen(place: Place) {
 
                         Icon(
                             imageVector = if (isSelected)
-                                Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                Icons.Filled.StarRate else Icons.Outlined.Star,
                             contentDescription = "star_$i",
                             tint = if (isSelected) Yellow else navy,
                             modifier = Modifier
@@ -435,14 +436,20 @@ fun ReviewCard(review:Review) {
         colors = CardDefaults.cardColors(containerColor = CardWhite)
     ) {
         Column(Modifier.padding(14.dp)) {
-            Text(review.username, fontSize = 16.sp, color = Navy, modifier = Modifier.padding(bottom = 4.dp))
+            Text(
+                review.username,
+                fontSize = 16.sp,
+                color = Navy,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
 
             Row {
-                repeat(review.rating) {
+                for (i in 1..5) {
                     Icon(
-                        Icons.Filled.Favorite,
+                        imageVector = Icons.Filled.StarRate,
                         contentDescription = null,
-                        tint = Yellow,
+                        tint = if (i <= review.rating) Yellow else Color.LightGray, // المتلون + الفاضي
                         modifier = Modifier.size(18.dp)
                     )
                 }

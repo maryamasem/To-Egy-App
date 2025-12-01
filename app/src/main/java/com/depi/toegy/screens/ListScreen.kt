@@ -70,7 +70,7 @@ fun PlacesListScreen(
     category:String,
     modifier: Modifier = Modifier
 ) {
-    Log.d("cat", "PlacesListScreen: $category")
+   // Log.d("trace", "PlacesListScreen: $category")
     val vm: TourismViewModel = viewModel()
 
     LaunchedEffect(category) {
