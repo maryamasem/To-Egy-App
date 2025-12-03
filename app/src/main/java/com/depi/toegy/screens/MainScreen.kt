@@ -93,8 +93,16 @@ fun AppNavHost(
 
         composable <Place>{
             val place: Place = it.toRoute()
-            TravelDetailScreen(place)
+            TravelDetailScreen(place,navController)
         }
+
+        composable("mapScreen/{lat}/{long}/{name}") { backStackEntry ->
+            val lat = backStackEntry.arguments?.getString("lat")?.toDouble() ?: 0.0
+            val long = backStackEntry.arguments?.getString("long")?.toDouble() ?: 0.0
+            val name = backStackEntry.arguments?.getString("name")?:""
+            Display_MapScreen(lat, long,name)
+        }
+
 
     }
 

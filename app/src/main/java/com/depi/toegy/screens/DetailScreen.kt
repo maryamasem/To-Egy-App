@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.fonts.Font
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -42,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.depi.toegy.model.Place
@@ -92,11 +94,17 @@ fun getname() : String{
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TravelDetailScreen(place: Place) {
+fun TravelDetailScreen(place: Place ,navController: NavController) {
     val navy = Navy
     val accentYellow = AccentYellow
     val lightGrayText = SubtleGray
     val context = LocalContext.current
+
+    val auth = FirebaseAuth.getInstance()
+    val db = FirebaseFirestore.getInstance()
+    val currentUserEmail = auth.currentUser?.email
+    var editingReview by remember { mutableStateOf(false) }
+
     // ⭐ BottomSheet States
     var showRatingSheet by remember { mutableStateOf(false) }
     var userRating by remember { mutableStateOf(0) }
@@ -188,23 +196,31 @@ fun TravelDetailScreen(place: Place) {
                         lineHeight = 18.sp
                     )
                 }
+//                MapToggle(
+//                    iconSize = 26.dp,
+//                    navy = navy,
+//                    onMapClick = {
+//                        val lat = place.lat
+//                        val lng = place.long
+//                        val geoUri =
+//                            Uri.parse("geo:$lat,$lng?q=$lat,$lng(${Uri.encode(place.name)})")
+//                        val mapIntent = Intent(Intent.ACTION_VIEW, geoUri).apply {
+//                                `package` = "com.google.android.apps.maps"
+//                        }
+//                        try {
+//                            context.startActivity(mapIntent)
+//                        } catch (e: ActivityNotFoundException) {
+//                            val fallbackIntent = Intent(Intent.ACTION_VIEW, geoUri)
+//                            context.startActivity(fallbackIntent)
+//                        }
+//                    }
+//                )
+
                 MapToggle(
                     iconSize = 26.dp,
                     navy = navy,
                     onMapClick = {
-                        val lat = place.lat
-                        val lng = place.long
-                        val geoUri =
-                            Uri.parse("geo:$lat,$lng?q=$lat,$lng(${Uri.encode(place.name)})")
-                        val mapIntent = Intent(Intent.ACTION_VIEW, geoUri).apply {
-                                `package` = "com.google.android.apps.maps"
-                        }
-                        try {
-                            context.startActivity(mapIntent)
-                        } catch (e: ActivityNotFoundException) {
-                            val fallbackIntent = Intent(Intent.ACTION_VIEW, geoUri)
-                            context.startActivity(fallbackIntent)
-                        }
+                        navController.navigate("mapScreen/${place.lat}/${place.long}/${place.name}")
                     }
                 )
             }
@@ -261,6 +277,17 @@ fun TravelDetailScreen(place: Place) {
 
                 Button(
                     onClick = {
+                        // تجهيز الـ BottomSheet للتعديل إذا المستخدم عنده review
+                        val userReview = reviews.find { it.email == currentUserEmail }
+                        if (userReview != null) {
+                            userRating = userReview.rating
+                            userComment = userReview.comment
+                            editingReview = true
+                        } else {
+                            userRating = 0
+                            userComment = ""
+                            editingReview = false
+                        }
                         showRatingSheet = true
                     },
                     modifier = Modifier
@@ -273,12 +300,11 @@ fun TravelDetailScreen(place: Place) {
                         pressedElevation = 2.dp
                     )
                 ) {
-                    Text(
-                        text = "Rate Place",
-                        color = NavyDark,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
-                    )
+                        Text(text ="Rate Place",
+                            color = NavyDark,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium
+                        )
                 }
             }
 
@@ -311,7 +337,16 @@ fun TravelDetailScreen(place: Place) {
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     items(reviews) { review ->
-                        ReviewCard(review)
+                        ReviewCard(
+                            review,
+                            currentUserEmail = currentUserEmail)
+                           { r ->
+                                // هنا بنفتح الـ BottomSheet ونعبي القيم الحالية
+                                userRating = r.rating
+                                userComment = r.comment
+                                editingReview = true
+                                showRatingSheet = true
+                            }
                     }
                 }
             }
@@ -361,54 +396,69 @@ fun TravelDetailScreen(place: Place) {
 
                 Spacer(Modifier.height(16.dp))
 
-                // ✨ Comment
+                //  Comment
                 OutlinedTextField(
                     value = userComment,
                     onValueChange = { userComment = it },
                     label = { Text("Comment...") },
                     modifier = Modifier.fillMaxWidth()
                 )
-
                 Spacer(Modifier.height(20.dp))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    // Submit
+                    Button(
+                        onClick = {
+                            if (userRating == 0) {
+                                Toast.makeText(context, "You must Rating", Toast.LENGTH_SHORT).show()
+                                return@Button
+                            }
 
-                // ✨ Submit
-                Button(
-                    onClick = {
-                       // Log.d("trace", "TravelDetailScreen:before ")
-                        if ( userComment.isNotBlank() && userRating > 0) {
-                      //      Log.d("trace", "TravelDetailScreen:after ")
-                            Firebase.firestore.collection("Items")
-                                .document(place.id)
-                                .collection("Reviews")
-                                .add(
+                            if (currentUserEmail != null) {
+                                val reviewDoc = db.collection("Items")
+                                    .document(place.id)
+                                    .collection("Reviews")
+                                    .document(currentUserEmail)
+
+                                reviewDoc.set(
                                     Review(
-                                        username = savedName!!,
-                                        email = "",
+                                        username = savedName,
+                                        email = currentUserEmail,
                                         rating = userRating,
                                         comment = userComment
                                     )
                                 )
-                                .addOnSuccessListener {
+                            }
+                            showRatingSheet = false
+                            userRating = 0
+                            userComment = ""
+                        },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(Yellow)
+                    ) { Text("Submit", color = NavyDark) }
 
+                    // Delete
+                    if (editingReview) {
+                        Button(
+                            onClick = {
+                                if (currentUserEmail != null) {
+                                    db.collection("Items").document(place.id).collection("Reviews")
+                                        .document(currentUserEmail).delete()
                                 }
-                                .addOnFailureListener { e ->
-                                    Log.d("trace", "TravelDetailScreen: fail added${e}")
-                                }
-                        }
-                        showRatingSheet = false
-
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(Yellow)
-                ) {
-                    Text("Submit", color = NavyDark)
+                                showRatingSheet = false
+                                userRating = 0
+                                userComment = ""
+                                editingReview = false
+                            },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(Color.Red)
+                        ) { Text("Delete", color = Color.White) }
+                    }
                 }
 
                 Spacer(Modifier.height(20.dp))
             }
         }
     }
-
 }
 
 @Composable
@@ -428,11 +478,17 @@ fun MapToggle(iconSize: Dp, navy: Color, onMapClick: () -> Unit) {
 }
 // -------------------- REVIEW CARD --------------------
 @Composable
-fun ReviewCard(review:Review) {
+fun ReviewCard(review:Review, currentUserEmail: String?, onEdit: (Review) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .shadow(2.dp, RoundedCornerShape(12.dp)),
+            .shadow(2.dp, RoundedCornerShape(12.dp))
+            .clickable {
+                if (review.email == currentUserEmail) {
+                    onEdit(review)
+                }
+            }
+        ,
         colors = CardDefaults.cardColors(containerColor = CardWhite)
     ) {
         Column(Modifier.padding(14.dp)) {
@@ -449,14 +505,13 @@ fun ReviewCard(review:Review) {
                     Icon(
                         imageVector = Icons.Filled.StarRate,
                         contentDescription = null,
-                        tint = if (i <= review.rating) Yellow else Color.LightGray, // المتلون + الفاضي
+                        tint = if (i <= review.rating) Yellow else Color.LightGray,
                         modifier = Modifier.size(18.dp)
                     )
                 }
             }
 
             Spacer(Modifier.height(6.dp))
-
             Text(review.comment, fontSize = 14.sp, color = Color.Gray)
         }
     }
