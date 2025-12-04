@@ -255,6 +255,9 @@ fun TravelDetailScreen(place: Place ,navController: NavController) {
                 Button(
                     onClick = {
                         val url = place.url
+                        if (url.isNullOrBlank()) {
+                            Toast.makeText(context, "Sorry, no more data for this site", Toast.LENGTH_SHORT).show()
+                        }
                         url?.let {
                             val fixedUrl = if(it.startsWith("http://") || it.startsWith("https://")){
                                 it
@@ -352,7 +355,7 @@ fun TravelDetailScreen(place: Place ,navController: NavController) {
                             review,
                             currentUserEmail = currentUserEmail)
                            { r ->
-                                // هنا بنفتح الـ BottomSheet ونعبي القيم الحالية
+                                // هنا بنفتح الـ BottomSheet ونبعت القيم الحالية
                                 userRating = r.rating
                                 userComment = r.comment
                                 editingReview = true
