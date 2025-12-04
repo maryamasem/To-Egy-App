@@ -1,6 +1,7 @@
 package com.depi.toegy.screens
 
 import android.content.Intent
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -30,23 +31,19 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberAsyncImagePainter
 import com.depi.toegy.R
 import com.depi.toegy.model.Place
+import com.depi.toegy.screens.CategoryItem
 import com.depi.toegy.ui.theme.BackgroundWhite
 import com.depi.toegy.ui.theme.NavyBlue
 import com.depi.toegy.ui.theme.Yellow
+import org.junit.experimental.categories.Categories
 
 @Composable
 fun Home(navController: NavController) {
 
     val imgMuseum = painterResource(R.drawable.egy_museum)
-    val img1 =  painterResource(R.drawable.museum_ic)
-    val img2 =  painterResource(R.drawable.beachs_ic)
-    val img3 =  painterResource(R.drawable.resturant_ic)
-    val img4 =  painterResource(R.drawable.hotel_ic)
-    val img5 =  painterResource(R.drawable.history_ic)
-    val img6 =  painterResource(R.drawable.airport_ic)
-
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -57,7 +54,7 @@ fun Home(navController: NavController) {
 
         item { EgyptIcon(Modifier) }
 
-        item { MuseumOpeningBannerAnimated {} }
+        item { MuseumOpeningBannerAnimated() }
 
         item {
             Text(
@@ -126,33 +123,50 @@ fun Home(navController: NavController) {
                 modifier = Modifier.fillMaxWidth()
             )
         }
-
+        val categories = Category.getSampleCategories(navController)
         item {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(260.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                item { CategoryItem(img1, "Museums") { navController.navigate("ListScreen/museums") } }
-                item { CategoryItem(img2, "Beaches") { navController.navigate("ListScreen/beaches") } }
-                item { CategoryItem(img3, "Restaurant") { navController.navigate("ListScreen/restaurants") } }
-                item { CategoryItem(img4, "Hotels") { navController.navigate("ListScreen/hotels") } }
-                item { CategoryItem(img5, "History") { navController.navigate("ListScreen/history") } }
-                item { CategoryItem(img6, "Airports") { navController.navigate("ListScreen/airports") } }
-            }
+            CategoriesSection(categories)
         }
+        item { Spacer(Modifier.height(50.dp)) }
 
     }
 }
-@Composable
-fun CategoryItem(icon: Painter, label: String, onClick: () -> Unit) {
 
+
+@Composable
+fun CategoriesSection(categories: List<Category>){
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        for (i in categories.indices step 3){
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                for (j in i until (i+3).coerceAtMost(categories.size)){
+                    val category = categories[j]
+                    CategoryItem(
+                        modifier = Modifier.weight(1f),
+                        icon = category.icon,
+                        label = category.label,
+                        onClick = category.onClick
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+
+
+@Composable
+fun CategoryItem(modifier:Modifier ,@DrawableRes icon: Int, label: String, onClick: () -> Unit) {
+    val context = LocalContext.current
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
+        modifier = modifier
             .width(100.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(Color(0xFFEBEEFA))
@@ -160,7 +174,7 @@ fun CategoryItem(icon: Painter, label: String, onClick: () -> Unit) {
             .clickable { onClick() }
     ) {
         Image(
-            painter = icon,
+            painter = rememberAsyncImagePainter("android.resource://${context.packageName}/$icon"),
             contentDescription = label,
             modifier = Modifier.size(48.dp)
         )
@@ -170,7 +184,7 @@ fun CategoryItem(icon: Painter, label: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun MuseumOpeningBannerAnimated(onClick: () -> Unit) {
+fun MuseumOpeningBannerAnimated() {
 
     val context = LocalContext.current
     val intent = Intent(Intent.ACTION_VIEW, "https://www.visit-gem.com/en/home".toUri())

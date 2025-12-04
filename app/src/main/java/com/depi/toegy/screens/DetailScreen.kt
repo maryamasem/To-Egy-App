@@ -252,8 +252,16 @@ fun TravelDetailScreen(place: Place ,navController: NavController) {
                 Button(
                     onClick = {
                         val url = place.url
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                        context.startActivity(intent)
+                        url?.let {
+                            val fixedUrl = if(it.startsWith("http://") || it.startsWith("https://")){
+                                it
+                            }else{
+                                "https://$it"
+                            }
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(fixedUrl))
+                            context.startActivity(intent)
+                        }
+
                     },
                     modifier = Modifier
                         .fillMaxWidth()
