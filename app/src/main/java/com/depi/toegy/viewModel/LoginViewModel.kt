@@ -12,14 +12,12 @@ import kotlinx.coroutines.tasks.await
 class LoginViewModel : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
 
-    // حالة تسجيل الدخول
     var isLoading by mutableStateOf(false)
         private set
-    
+
     var errorMessage by mutableStateOf<String?>(null)
         private set
 
-    // Function to handle login
     fun loginUser(
         email: String,
         password: String,
@@ -29,37 +27,57 @@ class LoginViewModel : ViewModel() {
         viewModelScope.launch {
             isLoading = true
             errorMessage = null
-            
+
             try {
-                // التحقق من صحة البيانات
+                // Validate fields
                 if (email.isBlank()) {
-                    errorMessage = "Please enter your email"
+                    val msg = "Please enter your email"
+                    errorMessage = msg
                     isLoading = false
-                    onFailure("Please enter your email")
-                    return@launch
-                }
-                
-                if (password.isBlank()) {
-                    errorMessage = "Please enter your password"
-                    isLoading = false
-                    onFailure("Please enter your password")
+                    onFailure(msg)
                     return@launch
                 }
 
-                // تسجيل الدخول باستخدام Firebase Auth
-                val result = auth.signInWithEmailAndPassword(email, password).await()
-                
-                if (result.user != null) {
+                if (password.isBlank()) {
+                    val msg = "Please enter your password"
+                    errorMessage = msg
+                    isLoading = false
+                    onFailure(msg)
+                    return@launch
+                }
+
+                auth.signInWithEmailAndPassword(email, password).await()
+                val user = auth.currentUser
+
+                if (user != null) {
+
+                    // Always reload before checking verification status
+                    user.reload().await()
+
+                    // CHECK EMAIL VERIFICATION AFTER RELOAD
+                    if (!user.isEmailVerified) {
+                        val msg = "Please verify your email first"
+                        auth.signOut()
+                        errorMessage = msg
+                        isLoading = false
+                        onFailure(msg)
+                        return@launch
+                    }
+
+                    // If verified → success
                     isLoading = false
                     onSuccess()
+
                 } else {
-                    errorMessage = "Login failed. Please try again."
+                    val msg = "Login failed. Please try again."
+                    errorMessage = msg
                     isLoading = false
-                    onFailure("Login failed. Please try again.")
+                    onFailure(msg)
                 }
 
             } catch (e: Exception) {
                 isLoading = false
+
                 val errorMsg = when {
                     e.message?.contains("invalid-email") == true -> "Invalid email format"
                     e.message?.contains("user-not-found") == true -> "No account found with this email"
@@ -67,20 +85,12 @@ class LoginViewModel : ViewModel() {
                     e.message?.contains("network") == true -> "Network error. Please check your connection"
                     else -> e.message ?: "Login failed. Please try again."
                 }
+
                 errorMessage = errorMsg
                 onFailure(errorMsg)
             }
         }
     }
-
-    // التحقق من حالة تسجيل الدخول
-    fun isUserLoggedIn(): Boolean {
-        return auth.currentUser != null
-    }
-
-    // تسجيل الخروج
-    fun logout() {
-        auth.signOut()
-    }
 }
+
 

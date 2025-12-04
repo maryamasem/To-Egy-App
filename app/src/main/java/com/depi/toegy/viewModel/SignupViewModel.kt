@@ -1,7 +1,5 @@
 package com.depi.toegy.viewModel
 
-import android.content.Context
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
@@ -9,40 +7,44 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class SignupViewModel(): ViewModel() {
+class SignupViewModel : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
 
-    // Function to handle sign up
     fun registerUser(
         name: String,
         email: String,
         password: String,
-        onSuccess: () -> Unit,
-        onFailure: (String) -> Unit) {
+        onSuccess: (String) -> Unit, // send message to UI
+        onFailure: (String) -> Unit
+    ) {
         viewModelScope.launch {
-
             try {
-                //Create User in Firebase Auth
+                // 1) Create user in Firebase Auth
                 val result = auth.createUserWithEmailAndPassword(email, password).await()
-                val userId = result.user?.uid ?: throw Exception("User ID not found")
+                val user = result.user ?: throw Exception("User not found")
 
-                // Create user data
+                // 2) Save data to Firestore BEFORE sending verification
                 val userData = mapOf(
                     "name" to name,
                     "email" to email
                 )
-
-                //Save user document in Firestore
                 db.collection("users")
-                    .document(userId)
+                    .document(user.uid)
                     .set(userData)
                     .await()
 
-                onSuccess()
+                // 3) Send email verification
+                user.sendEmailVerification().await()
+
+                // 4) Sign out user so they must log in only after verification
+                auth.signOut()
+
+                // 5) Notify UI
+                onSuccess("Verification email sent. Please check your inbox.")
 
             } catch (e: Exception) {
-                onFailure(e.message ?: "Unknown Error")
+                onFailure(e.message ?: "Unknown error")
             }
         }
     }

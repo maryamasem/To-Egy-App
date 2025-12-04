@@ -57,26 +57,6 @@ class FavoritesRepository(
         )
     }
 
-    /*suspend fun isFavorite(userId: String, placeId: String): FavoriteResult<Boolean> {
-        if (placeId.isBlank()) {
-            return FavoriteResult.Error("Missing favorite id.")
-        }
-        return runCatching {
-            usersCollection
-                .document(userId)
-                .collection("favorites")
-                .document(placeId)
-                .get()
-                .await()
-                .exists()
-        }.fold(
-            onSuccess = { FavoriteResult.Success(it) },
-            onFailure = {
-                FavoriteResult.Error(it.localizedMessage ?: "Unable to check favorite.", it)
-            }
-        )
-    }*/
-
     fun getFavorites(userId: String): Flow<FavoriteResult<List<FavoritePlace>>> = callbackFlow {
         val registration = usersCollection
             .document(userId)
