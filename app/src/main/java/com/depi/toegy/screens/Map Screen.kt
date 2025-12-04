@@ -1,7 +1,9 @@
 package com.depi.toegy.screens
 
 import android.content.Intent
+import android.location.Geocoder
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Directions
@@ -20,15 +22,24 @@ import com.google.maps.android.compose.*
 
 @Composable
 fun Display_MapScreen(lat: Double, long: Double, name: String) {
-
+    val decodedName = Uri.decode(name)
+   // Log.d("trace", "Display_MapScreen:$decodedName lat ${lat} long $long ")
     val context = LocalContext.current
+    // نحصل على الإحداثيات من الاسم
+    val geocoder = Geocoder(context)
+    val addresses = geocoder.getFromLocationName(decodedName, 1)
+
+    val location = if (addresses != null && addresses.isNotEmpty()) {
+        LatLng(addresses[0].latitude, addresses[0].longitude)
+    } else {
+        LatLng(lat, long) // fallback لو مش لاقي
+    }
+   // Log.d("trace", "Display_MapScreen:$location lat ${lat} long $long ")
+
     var mapType by remember { mutableStateOf(MapType.NORMAL) }
 
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(
-            LatLng(lat, long),
-            14f
-        )
+        position = CameraPosition.fromLatLngZoom(location, 15f)
     }
 
     // Map type state
@@ -43,8 +54,8 @@ fun Display_MapScreen(lat: Double, long: Double, name: String) {
             )
         ) {
             Marker(
-                state = MarkerState(position = LatLng(lat, long)),
-                title = "Location",
+                state = MarkerState(position = location),
+                title  = decodedName,
                 snippet = "Selected place"
             )
         }
@@ -55,7 +66,7 @@ fun Display_MapScreen(lat: Double, long: Double, name: String) {
                 .align(Alignment.BottomStart)
                 .padding(bottom = 90.dp, start = 16.dp),
             onClick = {
-                val locationUrl = "https://www.google.com/maps/search/?api=1&query=${Uri.encode(name)}+@${lat},${long}"
+                val locationUrl = "https://www.google.com/maps/search/?api=1&query=${Uri.encode(decodedName)}+@${lat},${long}"
                 val shareIntent = Intent().apply {
                     action = Intent.ACTION_SEND
                     putExtra(Intent.EXTRA_TEXT, "Check out this place: $locationUrl")

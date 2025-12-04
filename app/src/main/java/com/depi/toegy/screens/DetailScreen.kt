@@ -219,8 +219,11 @@ fun TravelDetailScreen(place: Place ,navController: NavController) {
                 MapToggle(
                     iconSize = 26.dp,
                     navy = navy,
+
                     onMapClick = {
-                        navController.navigate("mapScreen/${place.lat}/${place.long}/${place.name}")
+                        val encodedName = Uri.encode(place.name)
+                       // Log.d("trace", "Display_MapScreen:${place.name} lat ${place.lat} long ${place.long} ")
+                        navController.navigate("mapScreen/${place.lat}/${place.long}/${encodedName}")
                     }
                 )
             }

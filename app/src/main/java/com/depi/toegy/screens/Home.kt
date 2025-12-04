@@ -10,8 +10,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -20,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -34,11 +31,9 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.depi.toegy.R
 import com.depi.toegy.model.Place
-import com.depi.toegy.screens.CategoryItem
 import com.depi.toegy.ui.theme.BackgroundWhite
 import com.depi.toegy.ui.theme.NavyBlue
 import com.depi.toegy.ui.theme.Yellow
-import org.junit.experimental.categories.Categories
 
 @Composable
 fun Home(navController: NavController) {
@@ -157,10 +152,6 @@ fun CategoriesSection(categories: List<Category>){
         }
     }
 }
-
-
-
-
 @Composable
 fun CategoryItem(modifier:Modifier ,@DrawableRes icon: Int, label: String, onClick: () -> Unit) {
     val context = LocalContext.current
