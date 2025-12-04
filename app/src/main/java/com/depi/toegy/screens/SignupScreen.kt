@@ -61,11 +61,10 @@ fun SignUpScreen(
     var confirmPassword by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    var emailSent by remember { mutableStateOf(false) }
 
-    // 👁‍🗨 متغيرات إظهار/إخفاء الباسورد
     var showPassword by remember { mutableStateOf(false) }
     var showConfirmPassword by remember { mutableStateOf(false) }
-    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -93,7 +92,7 @@ fun SignUpScreen(
             errorMessage?.let { error ->
                 Text(
                     text = error,
-                    color = Color.Red,
+                    color = if (emailSent) Color.Green else Color.Red,
                     fontSize = 12.sp,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -101,6 +100,8 @@ fun SignUpScreen(
                 )
             }
 
+
+            //Name Field
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
@@ -121,6 +122,7 @@ fun SignUpScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Email Field
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -141,7 +143,7 @@ fun SignUpScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // ⭐ Password مع أيقونة العين
+            //  Password Field
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
@@ -149,10 +151,13 @@ fun SignUpScreen(
                 singleLine = true,
                 visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
-                    IconButton(onClick = { showPassword = !showPassword },modifier = Modifier.testTag("PasswordToggle")) {
+                    IconButton(
+                        onClick = { showPassword = !showPassword },
+                        modifier = Modifier.testTag("PasswordToggle")
+                    ) {
                         Icon(
                             imageVector = if (showPassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                            contentDescription =  "Toggle Password Visibility"
+                            contentDescription = "Toggle Password Visibility"
                         )
                     }
                 },
@@ -171,7 +176,7 @@ fun SignUpScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-
+            // Confirm Pass Field
             OutlinedTextField(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
@@ -179,7 +184,10 @@ fun SignUpScreen(
                 singleLine = true,
                 visualTransformation = if (showConfirmPassword) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
-                    IconButton(onClick = { showConfirmPassword = !showConfirmPassword },   modifier = Modifier.testTag("ConfirmPasswordToggle")) {
+                    IconButton(
+                        onClick = { showConfirmPassword = !showConfirmPassword },
+                        modifier = Modifier.testTag("ConfirmPasswordToggle")
+                    ) {
                         Icon(
                             imageVector = if (showConfirmPassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
                             contentDescription = "Toggle Confirm Password Visibility"
@@ -206,28 +214,23 @@ fun SignUpScreen(
                     errorMessage = null
                     when {
                         name.isBlank() -> {
-                            errorMessage = "Please enter your name"
-                            return@Button
+                            errorMessage = "Please enter your name"; return@Button
                         }
 
                         email.isBlank() -> {
-                            errorMessage = "Please enter your email"
-                            return@Button
+                            errorMessage = "Please enter your email"; return@Button
                         }
 
                         password.isBlank() -> {
-                            errorMessage = "Please enter your password"
-                            return@Button
+                            errorMessage = "Please enter your password"; return@Button
                         }
 
                         password.length < 6 -> {
-                            errorMessage = "Password must be at least 6 characters"
-                            return@Button
+                            errorMessage = "Password must be at least 6 characters"; return@Button
                         }
 
                         password != confirmPassword -> {
-                            errorMessage = "Passwords do not match"
-                            return@Button
+                            errorMessage = "Passwords do not match"; return@Button
                         }
 
                         else -> {
@@ -238,7 +241,8 @@ fun SignUpScreen(
                                 password = password,
                                 onSuccess = {
                                     isLoading = false
-                                    onSignUpSuccess()
+                                    errorMessage =
+                                        "Verification email sent! Please check your inbox."
                                 },
                                 onFailure = { error ->
                                     isLoading = false
@@ -250,9 +254,8 @@ fun SignUpScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp)
-                    .testTag("SignUpButton"),
-                shape = RoundedCornerShape(12.dp),
+                    .height(48.dp),
+                shape = MaterialTheme.shapes.medium,
                 colors = ButtonDefaults.buttonColors(containerColor = NavyBlue),
                 enabled = !isLoading
             ) {
@@ -267,6 +270,8 @@ fun SignUpScreen(
                 }
             }
 
+
+
             Spacer(modifier = Modifier.height(28.dp))
 
             Row(
@@ -280,6 +285,7 @@ fun SignUpScreen(
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun SignUpScreenPreview() {

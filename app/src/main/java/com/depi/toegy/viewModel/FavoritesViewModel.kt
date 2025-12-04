@@ -72,19 +72,6 @@ class FavoritesViewModel(
         }
     }
 
-    /* fun addFavorite(place: FavoritePlace) {
-         val uid = auth.currentUser?.uid ?: run {
-             _errorMessage.value = "User not authenticated."
-             return
-         }
-         viewModelScope.launch {
-             when (val result = repository.addToFavorites(uid, place)) {
-                 is FavoriteResult.Error -> _errorMessage.value = result.message
-                 else -> Unit
-             }
-         }
-     }*/
-
     fun removeFavorite(placeId: String) {
         val uid = auth.currentUser?.uid ?: run {
             _errorMessage.value = "User not authenticated."
@@ -104,11 +91,6 @@ class FavoritesViewModel(
             return
         }
 
-        // Log original place data
-        Log.e(
-            "FavoriteDebug",
-            "Original place data: Name='${place.name}', Lat='${place.lat}', Long='${place.long}', ID='${place.id}'"
-        )
 
         // Generate stable unique ID safely
         val generatedId = place.id.ifBlank {

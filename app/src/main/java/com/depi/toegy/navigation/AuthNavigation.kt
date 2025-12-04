@@ -36,6 +36,7 @@ fun AuthNavHost(
                     navController.navigate(AuthScreen.ForgotPassword.route)
                 },
                 onLoginSuccess = {
+                    // Only called when email is verified
                     onAuthSuccess()
                 },
                 viewModel = loginViewModel
@@ -47,11 +48,15 @@ fun AuthNavHost(
             _root_ide_package_.com.depi.toegy.screens.SignUpScreen(
                 onNavigateToLogin = {
                     navController.navigate(AuthScreen.Login.route) {
-                        popUpTo(AuthScreen.Login.route) { inclusive = false }
+                        popUpTo(AuthScreen.Login.route) { inclusive = true }
                     }
                 },
                 onSignUpSuccess = {
-                    onAuthSuccess()
+                    // After successful sign up: verification email is sent, user is signed out in VM.
+                    // Navigate back to Login so user can log in after verifying email.
+                    navController.navigate(AuthScreen.Login.route) {
+                        popUpTo(AuthScreen.Login.route) { inclusive = true }
+                    }
                 },
                 viewModel = signupViewModel
             )

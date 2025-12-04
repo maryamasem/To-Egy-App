@@ -18,14 +18,10 @@ class EgyptIconTest {
         composeRule.setContent {
             EgyptIcon()
         }
-        // التأكد من وجود الأيقونة
         composeRule.onNodeWithContentDescription("App icon")
             .assertIsDisplayed()
-        // التأكد من وجود العنوان
         composeRule.onNodeWithText("TO EGY")
             .assertIsDisplayed()
-
-        // التأكد من وجود السطر الفرعي
         composeRule.onNodeWithText("Your Smart Guide in Egypt")
             .assertIsDisplayed()
     }

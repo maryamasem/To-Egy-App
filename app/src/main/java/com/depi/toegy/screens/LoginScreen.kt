@@ -55,11 +55,8 @@ fun LoginScreen(
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
     var showPassword by rememberSaveable { mutableStateOf(false) }
-    var brush = remember {
-        SolidColor(Color.Black)
-    }
+
 
     Box(
         modifier = Modifier
@@ -74,7 +71,6 @@ fun LoginScreen(
         ) {
             EgyptIcon(Modifier)
 
-            // عرض رسالة الخطأ
             viewModel.errorMessage?.let { error ->
                 Text(
                     text = error,
@@ -138,7 +134,6 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // زر تسجيل الدخول
             Button(
                 onClick = {
                     viewModel.loginUser(

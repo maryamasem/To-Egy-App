@@ -6,6 +6,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -15,6 +16,8 @@ import androidx.navigation.toRoute
 import com.depi.toegy.model.Place
 import com.depi.toegy.screens.TravelDetailScreen
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 sealed class Screen(val route: String) {
     object Splash : Screen("splash")
@@ -28,21 +31,48 @@ fun AppNavigation(
     startDestination: String = Screen.Splash.route
 ) {
     val auth = FirebaseAuth.getInstance()
-    
-    // Check if user is logged in
-    var isUserLoggedIn by remember { mutableStateOf(auth.currentUser != null) }
-    
+    val coroutineScope = rememberCoroutineScope()
+
+    // Track whether there is a logged-in and verified user
+    var isUserLoggedIn by remember { mutableStateOf(false) }
+
+    // Initial check: reload user and verify email status
+    LaunchedEffect(Unit) {
+        val user = auth.currentUser
+        if (user != null) {
+            try {
+                user.reload().await()
+            } catch (_: Exception) {
+                // Ignore reload errors; fallback to current cached state
+            }
+        }
+        isUserLoggedIn = auth.currentUser?.isEmailVerified == true
+    }
+
     DisposableEffect(Unit) {
         val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
-            isUserLoggedIn = firebaseAuth.currentUser != null
+            val user = firebaseAuth.currentUser
+            if (user == null) {
+                isUserLoggedIn = false
+            } else {
+                // When auth state changes, always reload before checking verification
+                coroutineScope.launch {
+                    try {
+                        user.reload().await()
+                    } catch (_: Exception) {
+                        // Ignore reload errors
+                    }
+                    isUserLoggedIn = auth.currentUser?.isEmailVerified == true
+                }
+            }
         }
         auth.addAuthStateListener(authStateListener)
-        
+
         onDispose {
             auth.removeAuthStateListener(authStateListener)
         }
     }
-    
+
     // Navigate based on auth state changes
     LaunchedEffect(isUserLoggedIn) {
         val currentRoute = navController.currentDestination?.route
@@ -56,14 +86,14 @@ fun AppNavigation(
             }
         }
     }
-    
+
     // Determine start destination based on login status
     val actualStartDestination = if (isUserLoggedIn) {
         Screen.Main.route
     } else {
         startDestination
     }
-    
+
     NavHost(
         navController = navController,
         startDestination = actualStartDestination
@@ -77,7 +107,7 @@ fun AppNavigation(
                 }
             )
         }
-        
+
         composable(Screen.Login.route) {
             _root_ide_package_.com.depi.toegy.navigation.AuthNavHost(
                 onAuthSuccess = {
@@ -87,7 +117,7 @@ fun AppNavigation(
                 }
             )
         }
-        
+
         composable(Screen.Main.route) {
             _root_ide_package_.com.depi.toegy.screens.MainScreen()
         }

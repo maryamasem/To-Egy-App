@@ -11,13 +11,10 @@ import kotlinx.coroutines.tasks.await
 
 class ForgotPasswordViewModel : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
-
     var isLoading by mutableStateOf(false)
         private set
-    
     var errorMessage by mutableStateOf<String?>(null)
         private set
-    
     var successMessage by mutableStateOf<String?>(null)
         private set
 
@@ -33,7 +30,6 @@ class ForgotPasswordViewModel : ViewModel() {
             successMessage = null
             
             try {
-                // التحقق من صحة البريد الإلكتروني
                 if (email.isBlank()) {
                     errorMessage = "Please enter your email"
                     isLoading = false
@@ -41,7 +37,6 @@ class ForgotPasswordViewModel : ViewModel() {
                     return@launch
                 }
 
-                // إرسال رابط إعادة تعيين كلمة المرور
                 auth.sendPasswordResetEmail(email).await()
                 
                 isLoading = false

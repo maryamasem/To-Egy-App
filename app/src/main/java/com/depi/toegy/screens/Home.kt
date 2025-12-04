@@ -158,9 +158,6 @@ fun CategoriesSection(categories: List<Category>){
     }
 }
 
-
-
-
 @Composable
 fun CategoryItem(modifier:Modifier ,@DrawableRes icon: Int, label: String, onClick: () -> Unit) {
     val context = LocalContext.current
