@@ -31,73 +31,47 @@ fun AppNavigation(
     startDestination: String = Screen.Splash.route
 ) {
     val auth = FirebaseAuth.getInstance()
-    val coroutineScope = rememberCoroutineScope()
 
-    // Track whether there is a logged-in and verified user
-    var isUserLoggedIn by remember { mutableStateOf(false) }
+    // Track whether the user is logged in & verified
+    var isUserLoggedIn by remember { mutableStateOf(auth.currentUser?.isEmailVerified == true) }
 
-    // Initial check: reload user and verify email status
-    LaunchedEffect(Unit) {
-        val user = auth.currentUser
-        if (user != null) {
-            try {
-                user.reload().await()
-            } catch (_: Exception) {
-                // Ignore reload errors; fallback to current cached state
-            }
-        }
-        isUserLoggedIn = auth.currentUser?.isEmailVerified == true
-    }
-
+    // Very light listener (NO reload)
     DisposableEffect(Unit) {
-        val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+        val listener = FirebaseAuth.AuthStateListener { firebaseAuth ->
             val user = firebaseAuth.currentUser
-            if (user == null) {
-                isUserLoggedIn = false
-            } else {
-                // When auth state changes, always reload before checking verification
-                coroutineScope.launch {
-                    try {
-                        user.reload().await()
-                    } catch (_: Exception) {
-                        // Ignore reload errors
-                    }
-                    isUserLoggedIn = auth.currentUser?.isEmailVerified == true
-                }
-            }
+            isUserLoggedIn = user?.isEmailVerified == true
         }
-        auth.addAuthStateListener(authStateListener)
+        auth.addAuthStateListener(listener)
 
         onDispose {
-            auth.removeAuthStateListener(authStateListener)
+            auth.removeAuthStateListener(listener)
         }
     }
 
-    // Navigate based on auth state changes
+    // Navigation when login state changes
     LaunchedEffect(isUserLoggedIn) {
-        val currentRoute = navController.currentDestination?.route
-        if (isUserLoggedIn && currentRoute != Screen.Main.route) {
+        val current = navController.currentDestination?.route
+
+        if (isUserLoggedIn && current != Screen.Main.route) {
             navController.navigate(Screen.Main.route) {
                 popUpTo(0) { inclusive = true }
             }
-        } else if (!isUserLoggedIn && currentRoute != Screen.Splash.route && currentRoute != Screen.Login.route) {
+        } else if (!isUserLoggedIn && current != Screen.Splash.route && current != Screen.Login.route) {
             navController.navigate(Screen.Login.route) {
                 popUpTo(0) { inclusive = true }
             }
         }
     }
 
-    // Determine start destination based on login status
-    val actualStartDestination = if (isUserLoggedIn) {
-        Screen.Main.route
-    } else {
-        startDestination
-    }
+    // Start destination logic
+    val actualStartDestination =
+        if (isUserLoggedIn) Screen.Main.route else startDestination
 
     NavHost(
         navController = navController,
         startDestination = actualStartDestination
     ) {
+
         composable(Screen.Splash.route) {
             _root_ide_package_.com.depi.toegy.screens.SplashScreenUI(
                 onNavigateToLogin = {
@@ -111,6 +85,7 @@ fun AppNavigation(
         composable(Screen.Login.route) {
             _root_ide_package_.com.depi.toegy.navigation.AuthNavHost(
                 onAuthSuccess = {
+                    // user.emailVerified already cached
                     navController.navigate(Screen.Main.route) {
                         popUpTo(0) { inclusive = true }
                     }
@@ -121,7 +96,7 @@ fun AppNavigation(
         composable(Screen.Main.route) {
             _root_ide_package_.com.depi.toegy.screens.MainScreen()
         }
-
     }
 }
+
 

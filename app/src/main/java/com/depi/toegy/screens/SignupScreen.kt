@@ -61,6 +61,7 @@ fun SignUpScreen(
     var confirmPassword by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    var successMessage by remember { mutableStateOf<String?>(null) }
     var emailSent by remember { mutableStateOf(false) }
 
     var showPassword by remember { mutableStateOf(false) }
@@ -93,6 +94,17 @@ fun SignUpScreen(
                 Text(
                     text = error,
                     color = if (emailSent) Color.Green else Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                )
+            }
+
+            successMessage?.let { success ->
+                Text(
+                    text = success,
+                    color = Color(0xFF4CAF50),
                     fontSize = 12.sp,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -241,7 +253,7 @@ fun SignUpScreen(
                                 password = password,
                                 onSuccess = {
                                     isLoading = false
-                                    errorMessage =
+                                    successMessage =
                                         "Verification email sent! Please check your inbox."
                                 },
                                 onFailure = { error ->

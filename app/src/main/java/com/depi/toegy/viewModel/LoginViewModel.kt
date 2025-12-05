@@ -28,6 +28,7 @@ class LoginViewModel : ViewModel() {
             isLoading = true
             errorMessage = null
 
+
             try {
                 // Validate fields
                 if (email.isBlank()) {
