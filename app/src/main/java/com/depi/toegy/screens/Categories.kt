@@ -15,7 +15,7 @@ data class Category(
                 Category(R.drawable.museum_ic,"Museums"){
                     navController.navigate("ListScreen/museums")
                 },
-                Category(R.drawable.museum_ic, "Beaches") {
+                Category(R.drawable.beachs_ic, "Beaches") {
                     navController.navigate("ListScreen/beaches")
                 },
                 Category(R.drawable.resturant_ic, "Restaurant") {
