@@ -168,6 +168,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
 fun MainScreenStaticPreview() {
     ToEgyTheme {
         Scaffold(
+
             bottomBar = {
                 NavigationBar {
                     Destination.entries.forEach { destination ->

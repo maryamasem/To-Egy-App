@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.ads.mobile.sdk)
     implementation(libs.androidx.navigation.testing)
     implementation(libs.ui.test.junit4)
+    implementation(libs.androidx.foundation)
     testImplementation(libs.junit)
     testImplementation("org.mockito:mockito-core:5.5.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
