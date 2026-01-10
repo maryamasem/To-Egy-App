@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,12 +58,12 @@ fun FavoriteScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundWhite)
-            .padding(24.dp),
-        horizontalAlignment = Alignment.Start
+            .padding(top = 24.dp)
+
     ) {
         Text(
             text = "Favorites",
+            modifier = Modifier.padding(horizontal = 24.dp),
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
             color = NavyBlue,
@@ -109,8 +110,9 @@ fun FavoriteScreen(
 
             else -> {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 80.dp)
                 ) {
                     items(favorites, key = { it.id }) { place ->
                         FavoriteCard(

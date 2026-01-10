@@ -156,7 +156,9 @@ fun MainScreen(modifier: Modifier = Modifier) {
         AppNavHost(
             navController = navController,
             startDestination = startDestination,
-            modifier = Modifier.padding(contentPadding)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding)
         )
     }
 
@@ -168,6 +170,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
 fun MainScreenStaticPreview() {
     ToEgyTheme {
         Scaffold(
+
 
             bottomBar = {
                 NavigationBar {
